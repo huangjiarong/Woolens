@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>进销存管理系统</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!--add-->
+    ﻿<link rel="stylesheet" href="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.css' %}"/>
+    ﻿<link href="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap-editable/css/bootstrap-editable.css' %}" rel="stylesheet">
+
+    <!-- FooTable -->
+    <link href="{% static 'css/plugins/footable/footable.core.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        /*overwrite a.editable-empty*/
+
+        a.editable-empty{
+            width: 55px;
+            height: 25px;
+            display: inline-block;
+
+        }
+        .not-wrap{
+            white-space: nowrap;
+        }
+
+        .editable-click, 
+        a.editable-click, 
+        a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 0px #0088cc;
+            /*    重写去除下边框
+            */
+        }
+
+
+        /* 设置input的样式 
+            bootstrap table padding为8px,加上左border为1px
+            editable input 的样式中padding:6 24 6 2;border 1px;
+        */
+        .inputclass{
+            width:100% !important;min-width:87px;
+            height:30px;
+            padding-left: 2px;
+        }
+
+        .button-margin{
+            margin-bottom:20px;
+        }
+
+        .fixed{
+            table-layout: fixed;
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+            <div class="row wrapper border-bottom white-bg page-heading">
+           <div class="ibox-title">
+                            <h5>添加染色领料，染色通知和染色回毛</h5>
+                            <div class="ibox-tools">           
+                                <a type="﻿button" class="btn btn-primary"  href="{% url 'dyeList' %}">
+                                    <i class="fa fa-reply"></i>
+                                </a>
+                            </div>
+                        </div>
+            </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+ ﻿<div class="modal " id="materialNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" style="width:1000px;">
+                                <div class="modal-content animated bounceInRight">
+                                     <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">选择库存</h4>
+                                            <i id="indexFlag" style="display: none;"></i>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row form-horizontal">
+                                                <div class="form-group">
+                                                        <h4>库存:</h4>
+                                                    <div class="col-md-12">
+                                                      <table id="goodsTable"></table>
+                                                    </div>
+                                                </div>
+                                                </div>                  
+                                            </div>                                                  
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                                            <button id="testid" type="button" data-dismiss="modal" class="btn btn-primary" onclick="getValues()">选择</button>
+                                            
+                                        </div>
+                                   </div>
+                                </div>
+                            </div>
+
+
+
+    <div class="modal " id="chirdTableModel" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" style="width:1000px;">
+                                <div class="modal-content animated bounceInRight">
+                                     <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">选择染色通知单</h4>
+                                            <i id="indexFlag" style="display: none;"></i>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row form-horizontal">
+                                                <div class="form-group">
+                                                        <h4>染色通知单:</h4>
+                                                    <div class="col-md-12">
+                                                      <table id="secondTab"></table>
+                                                    </div>
+                                                </div>
+                                                </div>                  
+                                            </div>                                                  
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                                            <button id="secondsub" type="button" data-dismiss="modal" class="btn btn-primary" onclick="getValues2()">选择</button>
+                                            
+                                        </div>
+                                   </div>
+                                </div>
+                            </div>
+
+                        <div class="modal " id="TongzhiModel" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" style="width:1000px;">
+                                <div class="modal-content animated bounceInRight">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <i class="fa fa-laptop modal-icon"></i>
+                                        <h4 class="modal-title">染色领料单情况</h4>
+                                        <i id="indexFlag" style="display: none;"></i>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row form-horizontal">
+                                                <div class="form-group">
+                                                    <h4>染色领料单:</h4>
+                                                    <div class="col-md-12">
+                                                        <table id="thirdTab"></table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                                        <button id="thirdsub" type="button" data-dismiss="modal" class="btn btn-primary">选择</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="ibox-content">
+                            <div class="text-center">
+                             <h4 class="pull-left" style="position: absolute;">订单号:</h4>
+    <div class="btn-group pull-right" role="toolbar" aria-label="...">
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="complete_return()">回毛结束</button>
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="submitData1()">提交</button>
+      <button type="button" class="btn btn-primary" id="addRowbtn"><i class="fa fa-plus"></i></button>
+    </div>
+                            <h2>染色领料</h2>
+                            </div>
+                            <table class="table-responsive" id="basicTable">
+                            </table>
+
+                            <div class="text-center">
+                                <div class="btn-group pull-right" role="toolbar" aria-label="...">
+                                    <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='submitData3()'>提交</button>
+                                    <button type="button" class="btn btn-primary" id="TongzhiaddRowbtn"><i class="fa fa-plus"></i></button>
+                                </div>
+                                <h2>染色通知单</h2>
+                            </div>
+                            <table class="table-responsive" id="Tongzhi">
+                            </table>
+
+                             <div class="text-center">
+    <div class="btn-group pull-right" role="toolbar" aria-label="...">
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='submitData2()'>提交</button>
+      <button type="button" class="btn btn-primary" id="chirdTableaddRowbtn"><i class="fa fa-plus"></i></button>
+    </div>
+                                <h2>染色回毛</h2>
+                            </div>
+                            <table class="table-responsive" id="chirdTable">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="footer">
+            <div class="pull-right">
+                <strong>www</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 进销存管理系统 &copy; 2017-2018
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+
+    <!-- add -->
+    ﻿<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/export/bootstrap-table-export.js' %}"></script>
+
+	  <!-- <script src="../static/bootstrap_above/tableExport/libs/pdfmake/pdfmake.min.js"></script>
+		<script src="../static/bootstrap_above/tableExport/libs/pdfmake/vfs_fonts.js"></script> -->
+        <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/FileSaver/FileSaver.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF/jspdf.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/tableExport.js' %}"></script>
+
+        ﻿<script src="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap3-editable/js/bootstrap-editable.js' %}"></script>
+        <script src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/editable/bootstrap-table-editable.js' %}"></script>
+
+
+
+
+
+    <!-- FooTable -->
+    <script src="{% static 'js/plugins/footable/footable.all.min.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+<!-- ajax请求时开启csrf -->
+<script type="text/javascript">
+    $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+</script>
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+
+            $('.footable').footable();
+            $('.footable2').footable();
+
+        });
+
+
+
+<!-- 随机生成订单号，此方法为别人的，需要进一步改写 -->
+
+function randomNum(minNum,maxNum){
+var today = new Date();
+var day   = today.getDate(); //获取当前日(1-31)
+var month = today.getMonth() + 1; //显示月份比实际月份小1,所以要加1
+var year  = today.getYear();  //获取完整的年份(4位,1970-????)  getFullYear()
+var years=today.getFullYear();
+years= years<99?"20"+years:years;
+month    = month<10?"0"+month:month;  //数字<10，实际显示为，如5，要改成05
+day   = day<10?"0"+day:day;
+var hh=today.getHours();
+hh   = hh<10?"0"+hh:hh;
+var ii=today.getMinutes();
+ii   = ii<10?"0"+ii:ii;
+var ss= today.getSeconds();
+ss   = ss<10?"0"+ss:ss;
+var dada = years+month+day+hh+ii+ss;//时间不能直接相加，要这样相加！！！14位
+
+    switch(arguments.length){
+        case 1:
+            return dada+parseInt(Math.random()*minNum+1,10);
+            //newOrderId = dada+parseInt(Math.random()*minNum+1,10);
+        break;
+        case 2:
+            return dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+            //newOrderId = dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+        break;
+            default:
+                return 0;
+                //newOrderId = 0;
+            break;
+    }
+}
+
+        function addNewId() {
+            newOrderId = randomNum(1,1000);
+        }
+
+<!-- 随机生成订单号，end-->
+        {% if ord_num %}
+            var newOrderId = '{{ ord_num }}';
+        {% else %}
+            var newOrderId = randomNum(1,1000);
+        {% endif %}
+        $('h4.pull-left').text('订单号:'+newOrderId);
+
+
+
+
+
+      var Rowindex = 0;//用于删除数据时的唯一标志
+
+      $(function () {
+                $.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中    
+                 $.fn.bootstrapTable.columnDefaults.align = 'center';
+                $.fn.bootstrapTable.columnDefaults.width = '200px';
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+          $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+				<!--table start-->
+			    $('#basicTable').bootstrapTable({
+			    	method:'get',
+			        dataType:'json',
+			        contentType: "application/x-www-form-urlencoded",
+			        cache: false,
+			        striped: true,                              //是否显示行间隔色
+			        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                    url: "{% url 'dye-list' %}",
+                    dataField: "data",
+                    responseHandler:basicTable_responseHandler,//请求数据成功后，渲染表格前的方法
+                    queryParams:basicTable_queryParams,//请求服务器时所传的参数
+			        //showColumns:true,
+			        pagination:true,
+			        minimumCountColumns:2,
+			        pageNumber:1,                       //初始化加载第一页，默认第一页
+			        pageSize: 30,                       //每页的记录行数（*）
+			        pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+			        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                    rowStyle: complete_return_style,
+			        columns: [
+                    {
+                        checkbox:true,
+                    },
+                    {
+                        field:'id',
+                        title:'id'
+                    },
+                    {
+                        field:'index',
+                        title: 'index',
+                        formatter: function(value, row, index){
+                            row.index = index;
+                            return index;
+                        }
+                    },
+                    {
+				        field: 'ord_num',
+						title: '订单号',
+				    },
+                     {
+                        field: 'name',
+                        title: '品种',
+                    },
+                     {
+                        field: 'packaging_name',
+                        title: '包装',
+                    },
+                     {
+                        field: 'color_num',
+                        title: '色号',
+                    },
+                    {
+                        field: 'color_name',
+                        title: '颜色',
+                    },
+                     {
+                        field: 'dyelot_num',
+                        title: '缸号',
+                    },
+                    {
+                        field: 'batch_num',
+                        title: '批号',
+                    },
+                    {
+                        field: 'price',
+                        title: '领料单价',
+                        editable: {
+                            type: 'text',
+                            validate:function(value){
+                                if($.trim(value)==''){
+                                    return "不能为空";
+                                }
+                                if(isNaN(value-0))
+                                    return "只能填数字";
+                            }
+                        }
+                    },
+                    {
+                        field: 'number',
+                        title: '数量',
+                        editable: {
+								type: 'text',
+								}
+                    },
+                        {
+                            field: 'remain',
+                            title: '剩余数量',
+                        },
+                        {
+                            field: 'total_price',
+                            title: '总价',
+                        },
+                     {
+                        field: 'piece',
+                        title: '件数',
+                        editable: {
+								type: 'text',
+								}
+                    },
+                        {
+                            field: 'prick_num',
+                            title: '扎数',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'process',
+                            title: '染色厂',
+                            editable: {
+                                type: 'select',
+                                pk: 1,
+                                autotext:'always',//添加该标签使得html显示text
+                                source: function(){
+                                    var result = [];
+                                    $.ajax({
+                                        url: "{% url 'client-list' %}",
+                                        type: 'get',
+                                        dataType: 'json',
+                                        data: {'clientType_name': '染色厂'},
+                                        'async': false,
+                                        success: function(data, status){
+                                            $.each(data, function(key, value){
+                                                result.push({ value: value.id, text: value.name });
+                                            });
+                                        }
+                                    });
+                                    return result;
+                                },
+                                noeditFormatter: function (value,row,index) {
+                                    var result={filed:"process",value:value,class:"btn-primary",style:"padding:5px 10px;"};
+                                    return result;
+                                }
+                            }
+                        },
+                     {
+                        field: 'ord_date',
+                        title: '领料时间',
+                        editable: {
+                                //添加设置为弹出式,将显示在右边
+                                mode:'popup',
+                                placement:'left',
+                                showbuttons:true,
+                                type: 'date',
+                                format: 'yyyy-mm-dd',    
+                                viewformat: 'yyyy-mm-dd',    
+                                datetimepicker: {
+                                    weekStart: 1
+                                }
+                            } 
+                    },
+                        {
+                            field: 'return_date',
+                            title: '预计回毛时间',
+                            editable: {
+                                //添加设置为弹出式,将显示在右边
+                                mode:'popup',
+                                placement:'left',
+                                showbuttons:true,
+                                type: 'date',
+                                format: 'yyyy-mm-dd',
+                                viewformat: 'yyyy-mm-dd',
+                                datetimepicker: {
+                                    weekStart: 1
+                                }
+                            }
+                        },
+                        {
+                            field: 'opposite_num',
+                            title: '对方单号',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'complete_return',
+                            title: '是否回毛结束',
+                        },
+                        {
+                            field:'remarks',
+                            title:'备注',
+                            editable:{
+                                type:'text'
+                            }
+                        },
+					]
+				});
+              
+				$('#addRowbtn').click(function addOreder(){
+
+
+							var rowsAccount = $('#basicTable').bootstrapTable('getData').length;
+              // var index = $(this).parents('tr').data('index');
+							// alert(newOrderId);
+
+                var data = {
+                        'id' :-1,
+			            'index': '',
+                        'ord_num': newOrderId,
+                        'name':'',
+                        'color_num':'',
+                        'color_name':'',
+                        'packaging_name': '',
+                        'dyelot_num':'',
+                        'batch_num':'',
+                        'price': '',
+                        'number':'',
+                        'piece':'',
+                        'prick_num': '',
+                        'process': '',
+                        'total_price':'',
+                        'ord_date':'',
+                        'return_date': '',
+                        'opposite_num':'',
+                        'complete_return':'',
+                        'remarks':'',
+								};
+                $('#basicTable').bootstrapTable('append',data);
+            });
+          //请求服务数据时所传参数
+          function basicTable_queryParams(params){
+              return {
+                  pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                  pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                  ord_num: newOrderId,
+              }
+          }
+//请求成功方法
+          function basicTable_responseHandler(result){
+              //如果没有错误则返回数据，渲染表格
+              return {
+                  total : result.count, //总页数,前面的key必须为"total"
+                  data : result.results //行数据，前面的key要与之前设置的dataField的值一致.
+              };
+          }
+
+				<!--table end-->
+          $('#Tongzhi').bootstrapTable({
+              method:'get',
+              dataType:'json',
+              dataField: 'data',
+              url: "{% url 'dyeNotice-list' %}",
+              queryParams: Tongzhi_queryParams,
+              responseHandler: Tongzhi_responseHandler,
+              contentType: "application/x-www-form-urlencoded",
+              cache: false,
+              striped: true,                              //是否显示行间隔色
+              sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+              //showColumns:true,
+              pagination:true,
+              minimumCountColumns:2,
+              pageNumber:1,                       //初始化加载第一页，默认第一页
+              pageSize: 10,                       //每页的记录行数（*）
+              pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+              uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+              rowStyle: complete_return_style,
+              onEditableSave: function (field, row, oldValue, $el) {
+                  if (field="get_dye_color") {
+                      var arr = row['get_dye_color'].split(",");
+                      var dye_color = {
+                          index:row['index'],
+                          field:'dye_color',
+                          value:arr[0]
+                      };
+                      var dye_color_num = {
+                          index:row['index'],
+                          field:'dye_color_num',
+                          value:arr[1]
+                      };
+                      $('#Tongzhi').bootstrapTable("updateCell",dye_color);
+                      $('#Tongzhi').bootstrapTable("updateCell",dye_color_num);
+                  }
+              },
+              columns: [
+                  {
+                      checkbox:true,
+                  },
+                  {
+                      field:'id',
+                      title:'id'
+                  },
+                  {
+                      field:'index',
+                      title: 'index',
+                      formatter: function(value, row, index){
+                          row.index = index;
+                          return index;
+                      }
+                  },
+                  {
+                      field: 'ord_num',
+                      title: '订单号',
+                  },
+                  {
+                      field: 'process_name',
+                      title: '染色厂',
+                  },
+                  {
+                      field: 'name',
+                      title: '品种',
+                  },
+                  {
+                      field: 'packaging_name',
+                      title: '包装',
+                  },
+                  {
+                      field: 'color_num',
+                      title: '色号',
+                  },
+                  {
+                      field: 'color_name',
+                      title: '颜色',
+                  },
+                  {
+                      field: 'dyelot_num',
+                      title: '缸号',
+                  },
+                  {
+                      field: 'batch_num',
+                      title: '批号',
+                  },
+                  {
+                      field: 'number',
+                      title: '重量',
+                      editable: {
+                          type: 'text',
+                      }
+                  },
+                  {
+                      field: 'price',
+                      title: '单价',
+                      editable: {
+                          type: 'text',
+                      }
+                  },
+                  {
+                      field: 'get_dye_color',
+                      title: '染色种类',
+                      editable: {
+                          type: 'select',
+                          pk: 1,
+                          autotext:'always',//添加该标签使得html显示text
+                          <!--defaultValue:1,-->
+                          source: function(){
+                              var result = [];
+                              $.ajax({
+                                  url: "{% url 'color-list' %}",
+                                  type: 'get',
+                                  dataType: 'json',
+                                  'async': false,
+                                  success: function(data, status){
+                                      $.each(data, function(key, value){
+                                          result.push({ value: [value.id, value.color_num], text: value.color });
+                                      });
+                                  }
+                              });
+                              return result;
+                          },
+                          noeditFormatter: function (value,row,index) {
+                              var result={filed:"get_dye_color",value:value,class:"btn-primary",style:"padding:5px 10px;"};
+                              return result;
+                          }
+                      }
+                  },
+                  {
+                      field: 'dye_color',
+                      visible:false,
+                  },
+                  {
+                      field: 'dye_color_num',
+                      title: '染色色号',
+                  },
+                  {
+                      field: 'prick_num',
+                      title: '扎数',
+                      editable: {
+                          type: 'text',
+                      }
+                  },
+                  {
+                      field: 'piece',
+                      title: '件数',
+                      editable: {
+                          type: 'text',
+                      }
+                  },
+                  {
+                      field: 'ord_date',
+                      title: '领料时间',
+                      editable: {
+                          //添加设置为弹出式,将显示在右边
+                          mode:'popup',
+                          placement:'left',
+                          showbuttons:true,
+                          type: 'date',
+                          format: 'yyyy-mm-dd',
+                          viewformat: 'yyyy-mm-dd',
+                          datetimepicker: {
+                              weekStart: 1
+                          }
+                      }
+                  },
+                  {
+                      field: 'return_date',
+                      title: '预计回毛时间',
+                      editable: {
+                          //添加设置为弹出式,将显示在右边
+                          mode:'popup',
+                          placement:'left',
+                          showbuttons:true,
+                          type: 'date',
+                          format: 'yyyy-mm-dd',
+                          viewformat: 'yyyy-mm-dd',
+                          datetimepicker: {
+                              weekStart: 1
+                          }
+                      }
+                  },
+                  {
+                      field: 'complete_return',
+                      title: '是否回毛结束',
+                  },
+              ],
+          });
+          //请求服务数据时所传参数
+          function Tongzhi_queryParams(params){
+              return {
+                  pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                  pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                  ord_num: newOrderId,
+              }
+          }
+          //请求成功方法
+          function Tongzhi_responseHandler(result){
+              //如果没有错误则返回数据，渲染表格
+              return {
+                  total : result.count, //总页数,前面的key必须为"total"
+                  data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+              };
+          }
+
+          $('#TongzhiaddRowbtn').click(function addOreder(){
+
+
+              var rowsAccount = $('#Tongzhi').bootstrapTable('getData').length;
+              // var index = $(this).parents('tr').data('index');
+              // alert(newOrderId);
+
+              var data = {
+                  'id' :-1,
+                  'index': '',
+                  'ord_num': newOrderId,
+                  'process_name':'',
+                  'name':'',
+                  'color_num':'',
+                  'color_name':'',
+                  'price':'',
+                  'packaging_name': '',
+                  'dyelot_num':'',
+                  'batch_num':'',
+                  'number':'',
+                  'piece':'',
+                  'dye_color':'',
+                  'get_dye_color':'',
+                  'dye_color_num':'',
+                  'prick_num':'',
+                  'ord_date':'',
+                  'return_date': '',
+                  'complete_return': '',
+              };
+              $('#Tongzhi').bootstrapTable('append',data);
+          });
+
+          <!--table end-->
+				<!--   ------------------------------------------------------------------------------------------  -->
+					<!--table2 start-->
+						$('#chirdTable').bootstrapTable({
+							method:'get',
+                            dataType:'json',
+                            dataField: 'data',
+                            url: "{% url 'dyeReturn-list' %}",
+                            queryParams: chirdTab_queryParams,
+                            responseHandler: chirdTab_responseHandler,
+								contentType: "application/x-www-form-urlencoded",
+								cache: false,
+								striped: true,                              //是否显示行间隔色
+								sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+						//    showColumns:true,
+								pagination:true,
+								minimumCountColumns:2,
+								pageNumber:1,                       //初始化加载第一页，默认第一页
+								pageSize: 10,                       //每页的记录行数（*）
+								pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+								uniqueId: "id",                     //
+                            rowStyle: complete_return_style,
+							columns: [
+                            {
+                                checkbox:true,
+                            },{
+                        field:'index',
+                        title: 'index',
+                        formatter: function(value, row, index){
+                            row.index = index;
+                            return index;
+                        }
+                            },
+                            {
+									field: 'id',
+									title: 'id'
+							},
+                                {
+                                    field: 'ord_num',
+                                    title: '订单号',
+                                },
+                                {
+                                    field: 'warehouse',
+                                    title: '回毛仓库',
+                                    editable: {
+                                        type: 'select',
+                                        pk: 1,
+                                        autotext:'always',//添加该标签使得html显示text
+                                        source: function(){
+                                            var result = [];
+                                            $.ajax({
+                                                url: "{% url 'warehouse-list' %}",
+                                                type: 'get',
+                                                dataType: 'json',
+                                                data: {'type': '染色产品仓库'},
+                                                'async': false,
+                                                success: function(data, status){
+                                                    $.each(data, function(key, value){
+                                                        result.push({ value: value.id, text: value.name });
+                                                    });
+                                                }
+                                            });
+                                            return result;
+                                        },
+                                        noeditFormatter: function (value,row,index) {
+                                            var result={filed:"warehouse",value:value,class:"btn-primary",style:"padding:5px 10px;"};
+                                            return result;
+                                        }
+                                    }
+                                },
+                                {
+                                    field: 'process_name',
+                                    title: '染色厂',
+                                },
+                                {
+                                    field: 'name',
+                                    title: '品种',
+                                },
+                                {
+                                    field: 'packaging_name',
+                                    title: '包装',
+                                },
+                                {
+                                    field: 'color_num',
+                                    title: '色号',
+                                },
+                                {
+                                    field: 'color_name',
+                                    title: '颜色',
+                                },
+                                {
+                                    field: 'dyelot_num',
+                                    title: '缸号',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'batch_num',
+                                    title: '批号',
+                                },
+                                {
+                                    field: 'number',
+                                    title: '数量',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'piece',
+                                    title: '件数',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'price',
+                                    title: '成本单价',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'total',
+                                    title: '成本金额',
+                                },
+                                {
+                                    field: 'process_price',
+                                    title: '加工价',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'process_total',
+                                    title: '加工总额',
+                                },
+                                {
+                                    field: 'total_price',
+                                    title: '总额',
+                                },
+                                {
+                                    field: 'return_date',
+                                    title: '回毛日期',
+                                    editable: {
+                                        //添加设置为弹出式,将显示在右边
+                                        mode:'popup',
+                                        placement:'left',
+                                        showbuttons:true,
+                                        type: 'date',
+                                        format: 'yyyy-mm-dd',
+                                        viewformat: 'yyyy-mm-dd',
+                                        datetimepicker: {
+                                            weekStart: 1
+                                        }
+                                    }
+                                },
+                                {
+                                    field: 'opposite_num',
+                                    title: '对方单号',
+                                    editable: {
+                                        type: 'text',
+                                    }
+                                },
+                                {
+                                    field: 'complete_return',
+                                    title: '是否回毛结束',
+                                },
+                                {
+                                    field:'remarks',
+                                    title:'备注',
+                                    editable:{
+                                        type:'text'
+                                    }
+                                },
+						]
+					});
+
+					$('#chirdTableaddRowbtn').click(function(){
+									var data = {
+										'id': -1,
+                                        'ord_num': newOrderId,
+                                        'name':'',
+                                        'warehouse': '',
+                                        'packaging_name': '',
+                                        'color_num':'',
+                                        'color_name':'',
+                                        'process_name':'',
+                                        'dyelot_num':'',
+                                        'batch_num':'',
+                                        'number':'',
+                                        'piece':'',
+                                        'total':'',
+                                        'price':'',
+                                        'process_price':'',
+                                        'process_total':'',
+                                        'total_price':'',
+                                        'return_date':'',
+                                        'opposite_num':'',
+                                        'complete_return':'',
+                                        'remarks':'',
+									};
+									$('#chirdTable').bootstrapTable('append',data);
+							});
+					<!--table end-->
+			});
+        //请求服务数据时所传参数
+        function chirdTab_queryParams(params){
+            return {
+                pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                ord_num: newOrderId,
+            }
+        }
+        //请求成功方法
+        function chirdTab_responseHandler(result){
+            //如果没有错误则返回数据，渲染表格
+            return {
+                total : result.count, //总页数,前面的key必须为"total"
+                data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+            };
+        }
+                    $('#goodsTable').bootstrapTable({
+                                method:'get',
+                                dataType:'json',
+                                dataField: 'data',
+                                url: "{% url 'inventory-list' %}",
+                                responseHandler: goodsTab_responseHandler,
+                                queryParams: goodsTab_queryParams,
+                                contentType: "application/x-www-form-urlencoded",
+                                cache: false,
+                                striped: true,                              //是否显示行间隔色
+                                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                                showColumns:true,
+                                pagination:true,
+                                minimumCountColumns:2,
+                                pageNumber:1,                       //初始化加载第一页，默认第一页
+                                pageSize: 10,                       //每页的记录行数（*）
+                                pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+                                uniqueId: "id",
+                                search:true,
+
+                        columns: [
+                        {
+                            radio:true,
+                        },
+                        {
+
+                                    field: 'name',
+                                    title: '毛料名称',
+                        },
+                            {
+                                field: 'warehouse_name',
+                                title: '所在仓库',
+
+                            },
+                            {
+                                field: 'number',
+                                title: '数量',
+
+                            },
+                        {
+                                    field: 'price',
+                                    title: '摇纱产品单价',
+                        },
+                        {
+                        field: 'packaging_name',
+                        title: '包装',
+
+                    },
+                     {
+                        field: 'color_num',
+                        title: '色号',
+
+                    },
+                    {
+                        field: 'color_name',
+                        title: '颜色',
+
+                    },
+                     {
+                        field: 'dyelot_num',
+                        title: '缸号',
+
+                    },
+                    {
+                        field: 'batch_num',
+                        title: '批号',
+
+                    },
+                        ]
+                    });
+function goodsTab_queryParams(params){
+    return {
+        pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+        pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+        greater_number: 0,
+        woolens_type: '摇纱',
+    }
+}
+//请求成功方法
+function goodsTab_responseHandler(result){
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : result.count, //总页数,前面的key必须为"total"
+        data : result.results //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+}
+
+        $('#thirdTab').bootstrapTable({
+            method:'get',
+            dataType:'json',
+            dataField: "data",
+            url: "{% url 'dye-list' %}",
+            responseHandler: thirdTab_response,
+            queryParams: thirdTab_query,
+            contentType: "application/x-www-form-urlencoded",
+            cache: false,
+            striped: true,                              //是否显示行间隔色
+            sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+            showColumns:true,
+            pagination:true,
+            minimumCountColumns:2,
+            pageNumber:1,                       //初始化加载第一页，默认第一页
+            pageSize: 10,                       //每页的记录行数（*）
+            pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+            uniqueId: "id",
+            search:true,
+
+            columns: [
+                {
+                    checkbox:true,
+                },
+                {
+                    field:'id',
+                    title:'id',
+                },
+                {
+
+                    field: 'name',
+                    title: '毛料名称',
+                },
+                {
+                    field: 'packaging_name',
+                    title: '包装',
+
+                },
+                {
+                    field: 'color_num',
+                    title: '色号',
+
+                },
+                {
+                    field: 'color_name',
+                    title: '颜色',
+
+                },
+                {
+                    field: 'dyelot_num',
+                    title: '缸号',
+                },
+                {
+                    field: 'batch_num',
+                    title: '批号',
+
+                },
+                {
+                    field: 'remain',
+                    title: '剩余可领数量'
+                },
+                {
+                    field: 'price',
+                    title: '单价'
+                },
+                {
+                    field: 'process_name',
+                    title: '染色厂'
+                },
+            ]
+        });
+        //请求服务数据时所传参数
+        function thirdTab_query(params){
+            return {
+                pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                ord_num: newOrderId, //订单号'
+                greater_remain: 0,  //剩余数量大于0的
+                complete_return: 'False',
+            }
+        }
+        //请求成功方法
+        function thirdTab_response(result){
+            //如果没有错误则返回数据，渲染表格
+            return {
+                total : result.count, //总页数,前面的key必须为"total"
+                data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+            }
+        }
+
+$('#secondTab').bootstrapTable({
+                                method:'get',
+                                dataType:'json',
+                                dataField: 'data',
+                                url: "{% url 'dyeNotice-list' %}",
+                                responseHandler: secondTab_response,
+                                queryParams: secondTab_query,
+                                contentType: "application/x-www-form-urlencoded",
+                                cache: false,
+                                striped: true,                              //是否显示行间隔色
+                                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                                showColumns:true,
+                                pagination:true,
+                                minimumCountColumns:2,
+                                pageNumber:1,                       //初始化加载第一页，默认第一页
+                                pageSize: 10,                       //每页的记录行数（*）
+                                pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+                                uniqueId: "id",
+                                search:true,
+
+                        columns: [
+                        {
+                            checkbox:true,
+                        },
+                        {
+                            field:'id',
+                            title:'id',
+                        },
+                        {
+                            field: 'name',
+                            title: '毛料名称',
+                        },
+                        {
+                            field: 'process_name',
+                            title: '染色厂',
+                        },
+                        {
+                            field: 'packaging_name',
+                            title: '包装',
+
+                        },
+                        {
+                            field: 'color_num',
+                            title: '色号',
+
+                        },
+                        {
+                            field: 'color_name',
+                            title: '颜色',
+
+                        },
+                        {
+                            field: 'dyelot_num',
+                            title: '缸号',
+                        },
+                        {
+                            field: 'batch_num',
+                            title: '批号',
+
+                        },
+                            {
+                                field: 'dye_color_name',
+                                title: '染色种类',
+                            },
+                            {
+                                field: 'dye_color_num',
+                                title: '染色色号',
+
+                            },
+                            {
+                                field: 'price',
+                                title: '单价'
+                            }
+                        ]
+                    });
+			//请求服务数据时所传参数
+function secondTab_query(params){
+    return {
+        pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+        pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+        ord_num: newOrderId, //订单号
+        complete_return: 'False',
+    }
+}
+//请求成功方法
+function secondTab_response(result){
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : result.count, //总页数,前面的key必须为"total"
+        data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+}
+        //用于判断两个对象是否相同
+        function isObjectValueEqual(a, b) {
+            // Of course, we can do it use for in
+            // Create arrays of property names
+            var aProps = Object.getOwnPropertyNames(a);
+            var bProps = Object.getOwnPropertyNames(b);
+
+            // If number of properties is different,
+            // objects are not equivalent
+            if (aProps.length != bProps.length) {
+                console.log('it is no equal');
+                return false;
+            }
+
+            for(var i = 0; i < aProps.length; i++){
+                var propName = aProps[i];
+
+                // If values of same property are not equal,
+                // objects are not equivalent
+                if (a[propName] !== b[propName]) {
+                    console.log('it is no equal');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function material(arr){
+            this.name = arr['name'];
+            this.packaging = arr['packaging'];
+            this.color = arr['color'];
+            this.color_num = arr['color_num'];
+            this.dyelot_num  = arr['dyelot_num'];
+            this.batch_num = arr['batch_num'];
+            this.process = arr['process'];
+        }
+
+        function dyeNotice(arr){
+            this.name = arr['name'];
+            this.packaging = arr['packaging'];
+            this.dye_color = arr['dye_color'];
+            this.dye_color_num = arr['dye_color_num'];
+            this.dyelot_num  = arr['dyelot_num'];
+            this.batch_num = arr['batch_num'];
+            this.process = arr['process'];
+        }
+
+        //获取模态对话框中的内容
+        //
+    function getValues(){
+        //同样问题无法得到index
+        // var values = JSON.stringify($('#goodsTable').bootstrapTable('getSelections'));
+         var values = $('#goodsTable').bootstrapTable('getSelections');//获取select的值
+        console.log(values);
+         var rowdata = {
+             'reeling': values[0].id,
+                        };
+         var dataSum = $.extend(values[0],rowdata);
+         delete dataSum['number'];
+         delete dataSum['remain'];
+         delete dataSum['id'];
+         //更新一行
+         $('#basicTable').bootstrapTable('updateRow',{index:$('#indexFlag').text(),row:dataSum});
+     }
+        //染色通知表格中子表的点击事件
+        $('#thirdsub').click(function getValues(event){
+            //获取所有选择的数据
+            //判断选择的行数
+            var values = $('#thirdTab').bootstrapTable('getSelections');//获取select的值
+            console.log(values);
+            var arr = new Array();
+            var tmp = [];
+            for(var i=0;i<values.length;i++){
+                arr.push(new material(values[i]));
+                tmp.push(values[i]);
+            }
+            if(values.length>1){
+                for(var i=1;i<arr.length;i++){
+                    if(!isObjectValueEqual(arr[i],arr[i-1])){
+                        alert("选择两个商品不可以同时回毛!请重新选择");
+                        return  event.preventDefault();
+                    }
+                }
+
+            }
+            var item = [];
+            for(var i=0;i<tmp.length;i++){
+                item.push(tmp[i].id);
+            }
+            var rowdata = {
+                'name': values[0]['name'],  //获取了的物品种
+                'dye': item,
+            };
+            var dataSum = $.extend(values[0],rowdata);
+            delete dataSum['number'];
+            delete dataSum['piece'];
+            delete dataSum['prick_num'];
+            delete dataSum['ord_date'];
+            delete dataSum['return_date'];
+            delete dataSum['complete_return'];
+            {#delete dataSum['id'];#}
+            //更新一行
+            $('#Tongzhi').bootstrapTable('updateRow',{index:$('#indexFlag').text(),row:dataSum});
+        });
+
+        //染色回毛表格中子表的点击事件
+        $('#secondsub').click(function getValues(event){
+            //获取所有选择的数据
+            //判断选择的行数
+            var values = $('#secondTab').bootstrapTable('getSelections');//获取select的值
+            var arr = new Array();
+            var tmp = [];
+            for(var i=0;i<values.length;i++){
+                arr.push(new dyeNotice(values[i]));
+                tmp.push(values[i]);
+            }
+            if(values.length>1){
+                for(var i=1;i<arr.length;i++){
+                    if(!isObjectValueEqual(arr[i],arr[i-1])){
+                        alert("选择两个商品不可以同时回毛!请重新选择");
+                        return  event.preventDefault();
+                    }
+                }
+
+            }
+            var item = [];
+            for(var i=0;i<tmp.length;i++){
+                item.push(tmp[i].id);
+            }
+            var rowdata = {
+                'name': values[0]['name'],  //获取了的物品种
+                'dye_notice': item,
+            };
+            var dataSum = $.extend(values[0],rowdata);
+            delete dataSum['number'];
+            delete dataSum['dyelot_num'];
+            delete dataSum['piece'];
+            delete dataSum['prick_num'];
+            delete dataSum['ord_date'];
+            delete dataSum['return_date'];
+            delete dataSum['complete_return'];
+            dataSum['color_num'] = dataSum['dye_color_num'];
+            dataSum['color_name'] = dataSum['dye_color_name'];
+            //更新一行
+            console.log(dataSum);
+            $('#chirdTable').bootstrapTable('updateRow',{index:$('#indexFlag').text(),row:dataSum});
+        });
+
+
+    //为basicTable添加双击事件
+    $("#basicTable").on('dbl-click-cell.bs.table',function (field,value,row,$element,target){
+        if(value == 'name')//双击时无法绑定是哪一个单元格,所以需要对单元格进行验证
+        {
+           
+            var cellIndex = target[0].parentElement.rowIndex-1;//获取当前双击单元格的index
+            $('#indexFlag').text(cellIndex);//将点击的单元的index传给模态对话款
+            $('#materialNameModal').modal('toggle');//调用模态对话框
+        }
+    });
+    //为Tongzhi添加双击事件
+    $("#Tongzhi").on('dbl-click-cell.bs.table',function (field,value,row,$element,target){
+        if(value == 'name')//双击时无法绑定是哪一个单元格,所以需要对单元格进行验证
+        {
+
+            var cellIndex = target[0].parentElement.rowIndex-1;//获取当前双击单元格的index
+            $('#indexFlag').text(cellIndex);//将点击的单元的index传给模态对话款
+            $('#TongzhiModel').modal('toggle');//调用模态对话框
+        }
+    });
+    //为chirdTable添加双击事件
+    $("#chirdTable").on('dbl-click-cell.bs.table',function (field,value,row,$element,target){
+        if(value == 'name')//双击时无法绑定是哪一个单元格,所以需要对单元格进行验证
+        {
+            var cellIndex = target[0].parentElement.rowIndex-1;//获取当前双击单元格的index
+            $('#indexFlag').text(cellIndex);//将点击的单元的index传给模态对话款
+            $('#chirdTableModel').modal('toggle');//调用模态对话框
+
+        }   
+    });
+    //加载goodsTable表格
+    function loadGoodsTable(){
+        $('#goodsTable').bootstrapTable('load',arguments[0]);//为模态对话框加载数据
+        if(arguments[1]){
+            $('#goodsTable').bootstrapTable('hideColumn','id');
+        }else{
+            $('#goodsTable').bootstrapTable('showColumn','id');
+        }
+        $('#materialNameModal').modal('toggle');//调用模态对话框
+    }
+
+
+
+    //获取选择的数据
+    function getSelect(tableid){
+        var array = $('#'+arguments[0]).bootstrapTable('getSelections');
+        return array;
+    }
+
+    //删除数据
+    function remove(){
+        var array = getSelect(arguments[0]);
+        var deleteArr = new Array();
+        for(var i=0;i<array.length;i++){
+            deleteArr.push(array[i].index);
+        }; 
+        if(confirm('是否确定删除!')){
+            $('#'+arguments[0]).bootstrapTable('remove',{field:'index',values:deleteArr});
+        }
+    }
+    //操作对应的表格
+    function remove1(){
+        remove('basicTable');
+    }
+
+    function remove2(){
+        remove('chirdTable');
+    }
+
+    function remove3(){
+        remove('Tongzhi');
+    }
+
+    //染色领料提交事件
+    function submitData1(){
+        //获取所选择的数据
+        var array = getSelect('basicTable');
+        $.each(array, function(key, value){
+            value[0] = '';
+        });
+        var json_data = JSON.stringify(array);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: json_data,
+            url: "{% url 'dye-list' %}",
+            error:function(data){
+                var response_data = data.responseJSON;
+                console.log(response_data);
+                if(response_data[0]['non_field_errors']){
+                    alert("提交失败: " + response_data[0]['non_field_errors']);
+                    return false;
+                }
+                alert('提交失败');
+                for(var i = 0; i <response_data.length; i++){
+                    $("#basicTable").bootstrapTable('check', response_data[i].index);
+                    var index = response_data[i]['index'];
+                    delete response_data[i]['index'];
+                    $.each(response_data[i], function(key, value){
+                        $("#basicTable").bootstrapTable("updateCell",{index:index,field:key,value:value[0]});
+                        {#$("#basicTable").bootstrapTable("updateCell",{index:index,field:'error',value:true});#}
+                    });
+                }
+            },
+            success: function(data){
+                alert('提交成功！');
+                console.log(data);
+                $("#goodsTable").bootstrapTable('refresh');
+                $("#basicTable").bootstrapTable('refresh');
+                $("#thirdTab").bootstrapTable('refresh');
+            },
+        });
+    }
+    //染色回毛提交事件
+    function submitData2(){
+        //获取所选择的数据
+        var array = getSelect('chirdTable');
+        $.each(array, function(key, value){
+            value[0] = '';
+        });
+        var json_data = JSON.stringify(array);
+        console.log(json_data);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: json_data,
+            url: "{% url 'dyeReturn-list' %}",
+            error:function(data){
+                var response_data = data.responseJSON;
+                console.log(response_data);
+                if(response_data[0]['non_field_errors']){
+                    alert("提交失败: " + response_data[0]['non_field_errors']);
+                    return false;
+                }
+                alert('提交失败');
+                for(var i = 0; i <response_data.length; i++){
+                    $("#chirdTable").bootstrapTable('check', response_data[i].index);
+                    var index = response_data[i]['index'];
+                    delete response_data[i]['index'];
+                    $.each(response_data[i], function(key, value){
+                        $("#chirdTable").bootstrapTable("updateCell",{index:index,field:key,value:value[0]});
+                        {#$("#basicTable").bootstrapTable("updateCell",{index:index,field:'error',value:true});#}
+                    });
+                }
+            },
+            success: function(data){
+                alert('提交成功！');
+                console.log(data);
+                $("#chirdTable").bootstrapTable('refresh');
+            },
+        });
+    }
+    //染色通知提交事件
+    function submitData3(){
+        //获取所选择的数据
+        var array = getSelect('Tongzhi');
+        $.each(array, function(key, value){
+            value[0] = '';
+        });
+        var json_data = JSON.stringify(array);
+        console.log(json_data);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: json_data,
+            url: "{% url 'dyeNotice-list' %}",
+            error:function(data){
+                var response_data = data.responseJSON;
+                console.log(response_data);
+                if(response_data[0]['non_field_errors']){
+                    alert("提交失败: " + response_data[0]['non_field_errors']);
+                    return false;
+                }
+                alert('提交失败');
+                for(var i = 0; i <response_data.length; i++){
+                    $("#Tongzhi").bootstrapTable('check', response_data[i].index);
+                    var index = response_data[i]['index'];
+                    delete response_data[i]['index'];
+                    $.each(response_data[i], function(key, value){
+                        $("#Tongzhi").bootstrapTable("updateCell",{index:index,field:key,value:value[0]});
+                        {#$("#basicTable").bootstrapTable("updateCell",{index:index,field:'error',value:true});#}
+                    });
+                }
+            },
+            success: function(data){
+                alert('提交成功！');
+                console.log(data);
+                $("#thirdTab").bootstrapTable('refresh');
+                $("#goodsTable").bootstrapTable('refresh');
+                $("#basicTable").bootstrapTable('refresh');
+                $("#secondTab").bootstrapTable('refresh');
+            },
+        });
+    }
+    //回毛结束点击事件
+    function complete_return(){
+        //获取所选择的数据
+        var array = getSelect('basicTable');
+        $.each(array, function(key, value){
+            value[0] = '';
+        });
+        var json_data = JSON.stringify(array);
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: json_data,
+            url: "{% url 'complete_return_dye' %}",
+            error:function(data){
+                alert('提交失败');
+                console.log(data.responseJSON);
+            },
+            success: function(data){
+                alert('提交成功！');
+                console.log(data);
+                $("#basicTable").bootstrapTable('refresh');
+                $("#Tongzhi").bootstrapTable('refresh');
+                $("#chirdTable").bootstrapTable('refresh');
+                $("#secondTab").bootstrapTable('refresh');
+            },
+        });
+    }
+    //为所有回毛结束的数据添加一个背景
+    function complete_return_style(row,index){
+        if(row.hasOwnProperty('complete_return')){
+            if(row.complete_return == '已结束'){
+                return {css:{'background-color': 'pink'}};
+            }else{
+                return "";
+            }
+        }else{
+            return "";
+        }
+    }
+    </script>
+
+</body>
+
+</html>

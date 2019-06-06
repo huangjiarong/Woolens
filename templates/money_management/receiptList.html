@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>进销存管理系统</title>
+
+    {% include 'css.html' %}
+    <style>
+        /*overwrite a.editable-empty*/
+
+        a.editable-empty{
+            width: 55px;
+            height: 25px;
+            display: inline-block;
+
+        }
+        .not-wrap{
+            white-space: nowrap;
+        }
+
+        
+        .editable-click, 
+        a.editable-click, 
+        a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 0px #0088cc;
+            /*    重写去除下边框
+            */
+        }
+
+
+        /* 设置input的样式 
+            bootstrap table padding为8px,加上左border为1px
+            editable input 的样式中padding:6 24 6 2;border 1px;
+        */
+        .inputclass{
+            width:100% !important;min-width:87px;
+            height:30px;
+            padding-left: 2px;
+        }
+
+        .button-margin{
+            margin-bottom:20px;
+        }
+
+        .fixed{
+            table-layout: fixed;
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>查看收款单</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="{% url 'index' %}">主页</a>
+                        </li>
+                        <li>
+                            <a>资金管理</a>
+                        </li>
+                        <li class="active">
+                            <strong>收款单</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
+       		 
+			 
+			 <div class="wrapper   fadeInRight">
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                    <!-- model window -->
+    ﻿<div class="modal " id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="width:1100px">
+                                <div class="modal-content animated bounceInRight">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">模态标题</h4>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row form-horizontal">
+                                                
+                                                <div class="form-group">
+                                                   <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                 <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                 <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+                                                </div>                  
+                                                </ul>
+                                            </div>                                                  
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                                            <button type="button" class="btn btn-primary">保存更改</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                                      
+
+
+
+
+
+
+
+
+
+  <div class="ibox-content">
+
+
+    <div>
+        <form method="post" class="form-horizontal clearfix">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <label class="col-sm-1 control-label">订单号</label>
+                        <div class="col-md-2">
+                            <input id="search_ord_num" type="text"  class="form-control">
+                        </div>
+                        <label class="col-sm-1 control-label">结算号</label>
+                        <div class="col-md-2">
+                            <input id="search_settlement_num" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                </div>
+        </form>
+        <div class="fixed-table-toolbar pull-right" style="padding-top: 10px;">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='search()'>查询</button>
+            <a type="﻿button" class="btn btn-primary" href="{% url 'addReceipt' %}">
+                <i class="fa fa-plus"></i>
+            </a>
+        </div>  
+        </div>
+
+        
+        <!-- bootstrap table--->
+        
+    </div>
+		<table class="table-responsive" id="purchaseOrderList"></table>									
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       
+
+
+
+
+
+
+        <div class="footer">
+            <div class="pull-right">
+                <strong>www</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 进销存管理系统 &copy; 2017-2018
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+
+
+
+    {% include 'js.html' %}
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+
+            $('.footable').footable();
+            $('.footable2').footable();
+
+        });
+
+
+
+
+
+
+
+      $(function () {
+
+				$.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中    
+                $.fn.bootstrapTable.columnDefaults.width = '106px';
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+          $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+                <!--table start-->
+			    $('#purchaseOrderList').bootstrapTable({
+                    method:'get',
+                    url: "{% url 'receipt-list' %}",
+                    dataField: "data",
+			        dataType:'json',
+                    responseHandler:responseHandler,
+                    queryParams:queryParams,
+			        contentType: "application/x-www-form-urlencoded",
+			        cache: false,
+			        striped: true,                              //是否显示行间隔色
+			        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+			        pagination:true,
+			        minimumCountColumns:2,
+			        pageNumber:1,                       //初始化加载第一页，默认第一页
+			        pageSize: 10,                       //每页的记录行数（*）
+			        pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+			        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+			        columns: [ {
+                                field: 'ord_num',
+                                title: '订单号'
+                        },{
+                                    field: 'client_name',
+                                    title: '客户',
+                        },{
+                            field: 'receipt_money',
+                            title: '收款金额',
+                        },{
+                            field: 'staff',
+                            title: '收款人',
+                        },{
+                                    field: 'account_name',
+                                    title: '结算账户',
+                        },{
+                                    field: 'settlement_type_name',
+                                    title: '结算方式',
+                        },{
+                                    field: 'settlement_num',
+                                    title: '结算号',
+                        },{
+                            field: 'date',
+                            title: '单据日期',
+                        },{
+                            field: 'remarks',
+                            title: '备注',
+                        },
+					]
+				});
+      });
+          //请求服务数据时所传参数
+          function queryParams(params){
+              return {
+                  pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                  pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                  ordering: "-id",
+              }
+          }
+//请求成功方法
+          function responseHandler(result) {
+              //如果没有错误则返回数据，渲染表格
+              return {
+                  total: result.count, //总页数,前面的key必须为"total"
+                  data: result.results //行数据，前面的key要与之前设置的dataField的值一致.
+              }
+          }
+        //双击进入修改页面
+        $("#purchaseOrderList").on('dbl-click-row.bs.table',function ( $element,row){
+            $(window).attr('location','receipt/?ord_num='+ row.ord_num);
+        });
+
+        //查询事件
+        function search(){
+            $("#purchaseOrderList").bootstrapTable("refresh",{
+                query: {ord_num: $("#search_ord_num").val(), settlement_num: $("#search_settlement_num").val()},
+            });
+        }
+    </script>
+
+</body>
+
+</html>

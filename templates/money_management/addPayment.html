@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<title>添加付款单</title>
+        {% include 'css.html' %}
+        <style>
+            /*overwrite a.editable-empty*/
+
+            a.editable-empty{
+                width: 55px;
+                height: 25px;
+                display: inline-block;
+
+            }
+
+            .editable-click,
+            a.editable-click,
+            a.editable-click:hover {
+                text-decoration: none;
+                border-bottom: dashed 0px #0088cc;
+                /*    重写去除下边框
+                */
+            }
+
+
+            /* 设置input的样式
+                bootstrap table padding为8px,加上左border为1px
+                editable input 的样式中padding:6 24 6 2;border 1px;
+            */
+            .inputclass{
+                width:100% !important;min-width:87px;
+                height:30px;
+                padding-left: 2px;
+            }
+
+            .button-margin{
+                margin-bottom:20px;
+            }
+
+            .fixed{
+                table-layout: fixed;
+
+            }
+            .aaaa{
+                background: red;
+            }
+    		.paymen{
+    		    order-radius:2px;
+    			background:gray;
+    		}
+    	</style>
+	</head>
+	<body>
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+		<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>添加付款单</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="{% url 'index' %}">主页</a>
+                        </li>
+                        <li>
+                            <a>资金管理</a>
+                        </li>
+                        <li class="active">
+                            <strong>添加付款单</strong>
+                        </li>
+                    </ol>
+                     <a type="hidden" id='tag' href='javascript:void(0)'></a>
+                </div>
+        </div>
+	<div class="wrapper-content"> 
+ 	<div class="ibox-content">
+    <div class="text-center">
+	  <div class="row">
+	  	<h4 class="pull-left">单据编号:<span></span></h4>
+	  </div>
+	  <span>
+		  <input id="payunit" type="text" class="typeahead_1 form-control pull-left" style="width: 15%" placeholder="付款单位"/>
+	  </span>
+	  <!-- <input id="payman" data-type="select" data-title="Select status"></input> -->
+	  <div class="btn-group pull-right" role="toolbar" aria-label="...">
+          <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="submitData()">提交</button>
+	      <button id="addRowbtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+      </div>
+	</div>
+		<table class="table-responsive" id="List"></table>	
+		<!--  第二个表格-->
+    <div class="text-center">
+    <div class="btn-group pull-right" role="toolbar" aria-label="...">
+      <button type="button" class="btn btn-primary" id="chirdTableaddRowbtn"><i class="fa fa-plus"></i></button>
+    </div>
+	</div>
+    	<table class="table-responsive" id="chirdTable"></table>	
+    </div>
+    <div class="modal " id="materialNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="width:1000px;">
+            <div class="modal-content animated bounceInRight">
+                  <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <i class="fa fa-laptop modal-icon"></i>
+                        <h4 class="modal-title">付款单位</h4>
+                        <i id="indexFlag" style="display: none;"></i>
+                  </div>
+                  <div class="modal-body">
+                      <div class="container-fluid">
+                          <div class="row form-horizontal">
+                          <div class="form-group">
+                                  <h4>客户:</h4>
+                              <div class="col-md-12">
+                                <table id="goodsTable"></table>
+                              </div>
+                          </div>
+                          </div>                  
+                      </div>                                                  
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                      <button id="testid" type="button" data-dismiss="modal" class="btn btn-primary" onclick="setpayunit()">选择</button>
+                      
+                  </div>
+             </div>
+        </div>
+    </div>
+    <div class="modal " id="chirdTableModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="width:1000px;">
+            <div class="modal-content animated bounceInRight">
+                 <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <i class="fa fa-laptop modal-icon"></i>
+                        <h4 class="modal-title">选择应付款</h4>
+                        <i id="indexFlag" style="display: none;"></i>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row form-horizontal">
+                            <div class="form-group">
+                                    <h4>应付款:</h4>
+                                <div class="col-md-12">
+                                  <table id="secondTab"></table>
+                                </div>
+                            </div>
+                            </div>                  
+                        </div>                                                  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                        <button id="secondsub" type="button" data-dismiss="modal" class="btn btn-primary" onclick="getValues()">选择</button>
+                        
+                    </div>
+               </div>
+            </div>
+     </div>
+	</div>
+        {% include 'js.html' %}
+<script>
+ $(document).ready(function() {
+
+     $('.footable').footable();
+     $('.footable2').footable();
+ });
+
+	
+ <!-- 随机生成订单号，此方法为别人的，需要进一步改写 -->
+
+function randomNum(minNum,maxNum){
+var today = new Date();
+var day   = today.getDate(); //获取当前日(1-31)
+var month = today.getMonth() + 1; //显示月份比实际月份小1,所以要加1
+var year  = today.getYear();  //获取完整的年份(4位,1970-????)  getFullYear()
+var years=today.getFullYear();
+years= years<99?"20"+years:years;
+month    = month<10?"0"+month:month;  //数字<10，实际显示为，如5，要改成05
+day   = day<10?"0"+day:day;
+var hh=today.getHours();
+hh   = hh<10?"0"+hh:hh;
+var ii=today.getMinutes();
+ii   = ii<10?"0"+ii:ii;
+var ss= today.getSeconds();
+ss   = ss<10?"0"+ss:ss;
+var dada = years+month+day+hh+ii+ss;//时间不能直接相加，要这样相加！！！14位
+
+    switch(arguments.length){
+        case 1:
+            return dada+parseInt(Math.random()*minNum+1,10);
+            //newOrderId = dada+parseInt(Math.random()*minNum+1,10);
+        break;
+        case 2:
+            return dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+            //newOrderId = dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+        break;
+            default:
+                return 0;
+                //newOrderId = 0;
+            break;
+    }
+}
+
+		 if($('h4.pull-left>span').text()==''){
+		 	newOrderId = randomNum(1,1000);
+      	    $('h4.pull-left>span').text(newOrderId);
+         }else{
+         	newOrderId = $('h4.pull-left>span').text();
+         }
+
+
+function setpayunit(){
+	 var array = selected('goodsTable');
+	 $("#payunit").attr('value',array[0]['name']);
+    $("#secondTab").bootstrapTable("refresh",{
+        url: "{% url 'due-list' %}",
+        query: {greater_not_cancel: '0', client: array[0]['id']},
+    });
+
+}
+
+<!-- 随机生成订单号，end-->
+
+      $(function () {
+				$.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中    
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '   ';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+                $.fn.editable.defaults.defaultValue='';
+                $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+                <!--table start-->
+			    $('#List').bootstrapTable({
+			    	method:'POST',
+			        dataType:'json',
+			        contentType: "application/x-www-form-urlencoded",
+			        cache: false,
+			        striped: true,                              //是否显示行间隔色
+			        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+			    //    showColumns:true,
+			        pagination:true,
+			        minimumCountColumns:2,
+			        pageNumber:1,                       //初始化加载第一页，默认第一页
+			        pageSize: 8,                       //每页的记录行数（*）
+			        pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+			        uniqueId: "id", //每一行的唯一标识，一般为主键列
+                    data:[
+                        {
+                            id: '',
+                            ord_num: newOrderId,
+                            pay_money: '',
+                            settlement_num: '',
+                            settlement_type: '',
+                            remarks: '',
+                            payer: '',
+                            date: '',
+                        },
+                    ],
+			        columns: [
+			        	{
+			        		radio:'true'
+			        	},
+			         	{//为每一行添加index的方法
+                            field:'index',
+                            title:'index', 
+                            formatter:function (value,row,index){
+                                row.index = index;
+                                return index;
+                            }
+                        },{
+				                field: 'id',
+								title: 'id'
+				    	},
+						{
+									field: 'ord_num',
+									title: '单据编号',
+									visible:'false'
+						},
+						{
+											field: 'account',
+											title: '付款账号',
+											editable: {
+									     	type: 'select',
+                                   			autotext:'always',
+                                   			defaultValue:0,
+                                            source: function(){
+                                                var result = [];
+                                                $.ajax({
+                                                    url: "{% url 'account-list' %}",
+                                                    type: 'get',
+                                                    dataType: 'json',
+                                                    'async': false,
+                                                    success: function(data, status){
+                                                        $.each(data, function(key, value){
+                                                            result.push({ value: value.id, text: value.name });
+                                                        });
+                                                    }
+                                                });
+                                                return result;
+                                            },
+		                                	noeditFormatter: function (value,row,index) {
+		                                        var result={filed:"account",value:value,class:"badge",style:"padding:5px 10px;"};
+		                                        return result;
+		                                          },
+		                                   validate:function(value){
+						     					if($.trim(value)==""){
+						     					return "不能为空!";
+		                                    }
+						     		}
+						     	}  
+							},{
+								
+											field: 'settlement_type',
+											title: '结算方式',
+											editable: {
+									     	type: 'select',
+                                   			autotext:'always',
+                                            source: function(){
+                                                var result = [];
+                                                $.ajax({
+                                                    url: "{% url 'settlement-list' %}",
+                                                    type: 'get',
+                                                    dataType: 'json',
+                                                    'async': false,
+                                                    success: function(data, status){
+                                                        $.each(data, function(key, value){
+                                                            result.push({ value: value.id, text: value.name });
+                                                        });
+                                                    }
+                                                });
+                                                return result;
+                                            },
+		                                	noeditFormatter: function (value,row,index) {
+		                                        var result={filed:"settlement_type",value:value,class:"badge",style:"padding:5px 10px;"};
+		                                        return result;
+		                                          },
+		                                   validate:function(value){
+						     					if($.trim(value)==""){
+						     					return "不能为空!";
+		                                    }
+						     		}
+						     	}  
+							},{
+                                    field: 'pay_money',
+                                    title: '付款金额',
+                                    editable:{
+										type:'text',
+										validate:function(value){
+											if($.trim(value)==""){
+												return "不能为空!";
+											}else if(isNaN(Number(value))){
+												return "请输入数字!";
+											}
+										}
+									}
+                        },{ 
+                                    field: 'settlement_num',
+                                    title: '结算号',
+                                    editable:{
+										type:'text',
+										validate:function(value){
+											if($.trim(value)==""){
+												return "不能为空!";
+											}else if(isNaN(Number(value))){
+												return "请输入数字!";
+											}
+										}
+									}
+                        },{
+											field: 'payer',
+											title: '付款人',
+											editable: {
+									     	type: 'text',
+		                                   validate:function(value){
+						     					if($.trim(value)==""){
+						     					return "不能为空!";
+		                                    }
+						     		}
+						     	}  
+							},{
+                            field: 'date',
+                            title: '日期',
+                            /*class: 'not-wrap',*/
+                            editable: {
+                                //添加设置为弹出式,将显示在右边
+                                mode:'popup',
+                                placement:'left',
+                                showbuttons:true,
+                                type: 'date',
+                                format: 'yyyy-mm-dd',    
+                                viewformat: 'yyyy-mm-dd',    
+                                datetimepicker: {
+                                    weekStart: 1
+                                },
+                                validate:function(value){
+						     		if($.trim(value)==""){
+						     			return "不能为空!";
+						     		}
+						     	} 
+                            } 
+                        },{
+                                    field: 'remarks',
+                                    title: '备注',    
+                                    editable: {
+                                    type: 'text',  
+                            } 
+                        }
+					]
+				});
+				 $('#chirdTable').bootstrapTable({
+							method:'POST',
+								dataType:'json',
+								contentType: "application/x-www-form-urlencoded",
+								cache: false,
+								striped: true,                              //是否显示行间隔色
+								sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+						//    showColumns:true,
+								pagination:true,
+								minimumCountColumns:10,
+								pageNumber:1,                       //初始化加载第一页，默认第一页
+								pageSize: 10,                       //每页的记录行数（*）
+								pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）               //
+                            data:[
+                                {
+                                    id: '',
+                                    source_ordNum: '',
+                                    business_type: '',
+                                    date: '',
+                                    money: '',
+                                    had_cancel: '',
+                                    not_cancel: '',
+                                    cancel: '',
+                                },
+                            ],
+							columns: [
+                            {
+                                checkbox:true,
+                            },{
+                                field:'index',
+                                title:'index',
+                                formatter:function (value,row,index){
+                                    row.index = index;
+                                    return index;
+                                },
+                            },
+                            {
+									field: 'id',
+									title: 'id'
+							},{
+									field:'source_ordNum',
+									title:'源单号'
+							},{
+									field:'business_type',
+									title:'业务类别'
+							},{
+									field:'date',
+									title:'单据日期'
+							},{
+									field:'money',
+									title:'单据金额'
+							},{
+									field:'had_cancel',
+									title:'已核销金额'
+							},{
+									field:'not_cancel',
+									title:'未核销金额'
+							},{
+									field:'cancel',
+									title:'本次核销金额',
+									editable:{
+										type:'text',
+										validate:function(value){
+											if($.trim(value)==""){
+												return "不能为空!";
+											}else if(isNaN(Number(value))){
+												return "请输入数字!";
+											}
+										}
+									}
+							}
+						]
+					});
+
+
+					$('#chirdTableaddRowbtn').click(function(){
+					    var data = {
+                                    id: '',
+                                    source_ordNum: '',
+                                    business_type: '',
+                                    date: '',
+                                    money: '',
+                                    had_cancel: '',
+                                    not_cancel: '',
+                                    cancel: '',
+                                };
+									$('#chirdTable').bootstrapTable('append',data);
+							});
+					<!--table end-->   
+					//子表的取货表
+					$('#secondTab').bootstrapTable({
+                                method:'get',
+                                dataType:'json',
+                                contentType: "application/x-www-form-urlencoded",
+                                dataField: 'data',
+                                responseHandler: function(result){
+                                    return {
+                                        total : result.count, //总页数,前面的key必须为"total"
+                                        data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+                                    };
+                                },
+                                queryParams: function(params){
+                                    return {
+                                        pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                                        pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                                    };
+                                },
+                                cache: false,
+                                striped: true,                              //是否显示行间隔色
+                                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                                showColumns:true,
+                                pagination:true,
+                                minimumCountColumns:2,
+                                pageNumber:1,                       //初始化加载第一页，默认第一页
+                                pageSize: 10,                       //每页的记录行数（*）
+                                pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+                                search:true,
+                        columns: [
+                        {
+                            checkbox:true,
+                        },
+                        {   
+                            field:'id',
+                            title:'id'
+                        },
+                        {
+                                    field: 'ord_num',
+                                    title: '单据编号',          
+                        },{
+                        			field:'source_ordNum',
+                        			title:'源单号'
+                        },
+                     {
+                        field: 'business_type',
+                        title: '业务类别'
+                    },
+                    {
+                        field: 'date',
+                        title: '单据日期',
+                    },
+                     {
+                        field: 'money',
+                        title: '单据金额',
+                       
+                    },
+                    {
+                        field: 'had_cancel',
+                        title: '已核销金额',
+                        
+                    },{
+                    	field:'not_cancel',
+                    	title:'未核销金额'
+                    }
+                        ]
+                    });
+					
+			});
+			
+		
+		$('#goodsTable').bootstrapTable({
+								url:"{% url 'client-list' %}",
+                                method:'get',
+                                dataType:'json',
+                                dataField: "data",//这是返回的json数组的key.默认好像是"rows".这里只有前后端约定好就行
+                                contentType: "application/x-www-form-urlencoded",
+                                queryParams: goodsTable_queryParams,
+                                responseHandler: goodsTable_responseHandler,
+                                cache: false,
+                                striped: true,                              //是否显示行间隔色
+                                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                                showColumns:true,
+                                pagination:true,
+                                minimumCountColumns:2,
+                                pageNumber:1,                       //初始化加载第一页，默认第一页
+                                pageSize: 9,                       //每页的记录行数（*）
+                                pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+                                uniqueId: "id",   
+                                search:true,
+                  
+                        data: [],
+                        columns: [
+			        	{
+			        		radio:'true'
+                        },{
+				                field: 'id',
+								title: 'id'
+				    	},
+						{
+									field: 'number',
+									title: '客户编号',
+						},
+                        {
+                                    field: 'name',
+                                    title: '客户名称'
+                        },{
+                                    field: 'telephone',
+                                    title: '电话'
+                        },{
+                            
+                                    field: 'type',
+                                    title: '客户类别',
+                        },
+                        ]
+                    });
+ //请求服务数据时所传参数
+ function goodsTable_queryParams(params){
+     return {
+         pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+         pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+     }
+ }
+ //请求成功方法
+ function goodsTable_responseHandler(result){
+     //如果没有错误则返回数据，渲染表格
+     return {
+         total : result.count, //总页数,前面的key必须为"total"
+         data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+     };
+ }
+
+ function getValues(){
+     var values = $("#secondTab").bootstrapTable('getSelections');//获取select的值
+     //更新一行
+     values[0]['pay_money'] = 0;
+     $('#chirdTable').bootstrapTable('updateRow',{index:$('#indexFlag').text(),row:values[0]});
+     if(values.length>1){
+         for(var i=1;i<values.length;i++){
+             values[i]['cancel'] = 0;
+             $('#chirdTable').bootstrapTable('insertRow',{index:i,row:values[i]});
+         }
+     }
+ }
+
+	    //为chirdTable添加双击事件
+	    $("#chirdTable").on('dbl-click-cell.bs.table',function (field,value,row,$element,target){
+	        if(value == 'source_ordNum')//双击时无法绑定是哪一个单元格,所以需要对单元格进行验证
+	        {
+	            var cellIndex = target[0].parentElement.rowIndex-1;//获取当前双击单元格的index
+	            $('#indexFlag').text(cellIndex);//将点击的单元的index传给模态对话款
+	            $('#chirdTableModel').modal('toggle');//调用模态对话框
+	        }
+	    });
+	    
+		
+		
+		function selected(tableid){
+        var array = $('#'+arguments[0]).bootstrapTable('getSelections');
+        if(array.length==0)return false;
+        //console.log(JSON.stringify(array));
+        return array;
+    	}
+		
+		
+	
+		//<div class="editable-error-block help-block" style="">不能为空!</div>
+		//向后台服务器获取数据,将其放在select中
+
+		$('#addRowbtn').click(function addOreder(){
+		    var data = {
+		        'id': '',
+                'remarks': '',
+                'payer': '',
+                'settlement_num': '',
+                'ord_num': newOrderId,
+                'date': '',
+                'pay_money': '',
+            };
+                $('#List').bootstrapTable('append',data);
+         });	    
+            window.onkeydown = function(e){
+            	if(9 == e.keyCode&&e.target.tagName=="INPUT"){
+            		console.log(e.target.tagName);
+            		/*$(e.target).closest('td').find('a').editable('hide');*/
+            		//console.log($(e.target).closest('td').next('a'));
+            		$(e.target).closest('td').next().find('a').editable('show');
+            	}
+            };
+
+
+	$("#payunit").dblclick(function(){
+		  $('#materialNameModal').modal('toggle');//调用模态对话框
+	});
+
+ //表格提交事件
+ function submitData(){
+     //获取所选择的数据
+     var due_data = $('#chirdTable').bootstrapTable('getSelections');//获取select的值
+     if(due_data.length <= 0){
+         alert('请填写核销信息');
+     }
+     var payment_data = $('#List').bootstrapTable('getSelections');//获取select的值
+     var goodsTab_data = $('#goodsTable').bootstrapTable('getSelections');//获取select的值
+     if(goodsTab_data.length <= 0){
+         alert('请填写付款单位');
+     }
+     payment_data[0]['client'] = goodsTab_data[0]['id'];
+     payment_data[0]['due'] = due_data;
+     console.log(payment_data);
+     {#$.each(due_data, function(key, value){#}
+     {#    value['due'] = value['id'];#}
+     {#    value['account'] = payment_data[0]['account'];#}
+     {#    value['client'] = payment_data[0]['client'];#}
+     {#    value['payer'] = payment_data[0]['payer'];#}
+     {#    value['date'] = payment_data[0]['date'];#}
+     {#    value['settlement_type'] = payment_data[0]['settlement_type'];#}
+     {#    value['settlement_num'] = payment_data[0]['settlement_num'];#}
+     {#    value['remarks'] = payment_data[0]['remarks'];#}
+     {#    value['client'] = goodsTab_data[0]['id']#}
+     //});
+     var json_data = JSON.stringify(payment_data);
+     console.log(json_data);
+     $.ajax({
+         type: 'POST',
+         dataType: 'json',
+         contentType: 'application/json',
+         url: "{% url 'payment-list' %}",
+         data: json_data,
+         error:function(data){
+             var response_data = data.responseJSON;
+             console.log(response_data);
+             if(response_data[0]['non_field_errors']){
+                 alert("提交失败: " + response_data[0]['non_field_errors']);
+                 return false;
+             }
+             alert("提交失败");
+         },
+         success: function(data){
+             alert('提交成功！');
+             console.log(data);
+             $(window).attr('location',"{% url 'paymentList' %}");
+         },
+     });
+ }
+
+</script>
+	</body>
+</html>

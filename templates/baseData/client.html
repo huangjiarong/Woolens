@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>进销存管理系统</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!--add-->
+    ﻿<link rel="stylesheet" href="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.css' %}"/>
+    ﻿<link href="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap-editable/css/bootstrap-editable.css' %}" rel="stylesheet">
+
+    <!-- FooTable -->
+    <link href="{% static 'css/plugins/footable/footable.core.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /*overwrite a.editable-empty*/
+
+        a.editable-empty{
+            width: 55px;
+            height: 25px;
+            display: inline-block;
+
+        }
+        .not-wrap{
+            white-space: nowrap;
+        }
+
+        .editable-click,
+        a.editable-click,
+        a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 0px #0088cc;
+            /*    重写去除下边框
+            */
+        }
+
+
+        /* 设置input的样式
+            bootstrap table padding为8px,加上左border为1px
+            editable input 的样式中padding:6 24 6 2;border 1px;
+        */
+        .inputclass{
+            width:100% !important;min-width:87px;
+            height:30px;
+            padding-left: 2px;
+        }
+
+        .button-margin{
+            margin-bottom:20px;
+        }
+
+        .fixed{
+            table-layout: fixed;
+
+        }
+        .aaaa{
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+            <div class="row wrapper border-bottom white-bg page-heading">
+           <div class="ibox-title">
+               <form method="post" class="form-horizontal clearfix">
+                   <div class="col-sm-12">
+                       <div class="row form-group">
+                           <label class="col-sm-1 control-label">客户</label>
+                           <div class="col-md-2">
+                               <input id="search_name" type="text" placeholder="" class="form-control">
+                           </div>
+                           <label class="col-sm-1 control-label">客户类别</label>
+                           <div class="col-md-2">
+                               <input id="search_type" type="text" placeholder="" class="form-control">
+                           </div>
+                       </div>
+                       <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='search()'>查询</button>
+               </form>
+                        </div>
+            </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="text-center">
+    <div class="btn-group pull-right" role="toolbar" aria-label="...">
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="alter()">修改</button>
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='submit1()'>提交</button>
+      <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="remove()">删除</button>
+      <button type="button" class="btn btn-primary" id="addRowbtn"><i class="fa fa-plus"></i></button>
+    </div>
+                            <h2>客户情况</h2>
+                            </div>
+                            <table class="table-responsive" id="basicTable">
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="footer">
+            <div class="pull-right">
+                <strong>www</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 进销存管理系统 &copy; 2017-2018
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+
+    <!-- add -->
+    ﻿<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/export/bootstrap-table-export.js' %}"></script>
+
+    <!--   <script src="../static/bootstrap_above/tableExport/libs/pdfmake/pdfmake.min.js"></script>
+        <script src="../static/bootstrap_above/tableExport/libs/pdfmake/vfs_fonts.js"></script> -->
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/FileSaver/FileSaver.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF/jspdf.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/tableExport.js' %}"></script>
+
+    ﻿<script src="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap3-editable/js/bootstrap-editable.js' %}"></script>
+    <script src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/editable/bootstrap-table-editable.js' %}"></script>
+
+
+
+
+
+    <!-- FooTable -->
+    <script src="{% static 'js/plugins/footable/footable.all.min.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- ajax请求时开启csrf -->
+    <script type="text/javascript">
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+    </script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+
+            $('.footable').footable();
+            $('.footable2').footable();
+
+        });
+
+
+      $(function () {
+                $.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中
+                 $.fn.bootstrapTable.columnDefaults.align = 'center';
+                $.fn.bootstrapTable.columnDefaults.width = '200px';
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+          $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+                <!--table start-->
+                $('#basicTable').bootstrapTable({
+                     method: 'GET',
+                     dataType:'json',
+                     contentType: "application/x-www-form-urlencoded",//一种编码。好像在post请求的时候需要用到。这里用的get请求，注释掉这句话也能拿到数据
+                     url: "{% url 'client-list' %}",
+                     dataField: "data",//这是返回的json数组的key.默认好像是"rows".这里只有前后端约定好就行
+                     pageNumber: 1, //初始化加载第一页，默认第一页
+                     pagination:true,//是否分页
+                     queryParams: queryParams,
+                     responseHandler: responseHandler,
+                     sidePagination:'server',//指定服务器端分页，请注意分页方式不同，服务器端返回的数据格式不同。
+                     pageSize:7,//单页记录数
+                     pageList:[10,20],//分页步进值
+                     striped: true,//是否显示行间隔色
+                    columns: [
+                    {
+                        radio:true,
+                    },
+                    {
+                        field:'id',
+                        title:'id',
+                        visible:false,
+                    },
+                    {
+                        field:'index',
+                        title:'index',
+                        formatter:function (value, row, index) {
+                            return row.index=index;
+                        }
+                    },
+                    {
+                        field: 'number',
+                        title: '客户编号',
+                        editable: {
+                                 type: 'text',
+                                 }
+                    },
+                     {
+                        field: 'name',
+                        title: '客户名',
+                        editable: {
+                                 type: 'text',
+                                 }
+                    },
+
+                     {
+                        field: 'address',
+                        title: '地址',
+                        editable: {
+                                type: 'text',
+                                }
+                    },
+                    {
+                        field: 'link_man',
+                        title: '联系人',
+                        editable: {
+                                type: 'text',
+                                }
+                    },
+                        {
+                            field: 'telephone',
+                            title: '联系电话',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'email',
+                            title: '邮箱',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'fax',
+                            title: '传真',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                    {
+                        field: 'add_time',
+                        title: '建账日期',
+                    },
+                        {
+                            field: 'balance_date',
+                            title: '余额日期',
+                            editable: {
+                                //添加设置为弹出式,将显示在右边
+                                mode:'popup',
+                                placement:'right',
+                                //  showbuttons:true,
+                                type: 'date',
+                                format: 'yyyy-mm-dd',
+                                viewformat: 'yyyy-mm-dd',
+                                datetimepicker: {
+                                    weekStart: 1
+                                }
+                            }
+                        },
+                        {
+                            field: 'credit_limit',
+                            title: '授信额度',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'payment',
+                            title: '付款方式',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'client_type',
+                            title: '客户类别',
+                            editable: {
+                                type: 'select',
+                                pk: 1,
+                                autotext:'always',//添加该标签使得html显示text
+                                <!--defaultValue:1,-->
+
+                                source: function(){
+                                    var result = [];
+                                    $.ajax({
+                                        url: "{% url 'clientType-list' %}",
+                                        type: 'get',
+                                        dataType: 'json',
+                                        'async': false,
+                                        success: function(data, status){
+                                            $.each(data, function(key, value){
+                                                result.push({ value: value.id, text: value.name });
+                                            });
+                                        }
+                                    });
+                                    return result;
+                                },
+                                noeditFormatter: function (value,row,index) {
+                                    var result={filed:"client_type",value:value,class:"btn-primary",style:"padding:5px 10px;"};
+                                    return result;
+                            }
+                            }
+                        },
+                        {
+                            field: 'tr_num',
+                            title: '纳税人识别号',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'pre_receivable',
+                            title: '期初预付款',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'receivable',
+                            title: '期初应收款',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'deposit_bank',
+                            title: '开户银行',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                        {
+                            field: 'account',
+                            title: '银行帐号',
+                            editable: {
+                                type: 'text',
+                            }
+                        },
+                     {
+                        field: 'remarks',
+                        title: '备注',
+                        editable: {
+                                type: 'text',
+                                }
+                    },
+                    ]
+                });
+              <!--增加一行数据 开始-->
+                $('#addRowbtn').click(function addOreder(){
+                    var data = {
+                        'id':-1,
+                        'index':'',
+                        'number': '',
+                        'name': '',
+                        'address': '',
+                        'link_man': '',
+                        'telephone': '',
+                        'email': '',
+                        'fax': '',
+                        'credit_limit': 0,
+                        'payment': '',
+                        'client_type': '',
+                        'tr_num': '',
+                        'pre_receivable': 0,
+                        'receivable': 0,
+                        'balance_date': '',
+                        'deposit_bank': '',
+                        'account': '',
+                        'add_time':'',
+                        'remarks':'',
+                    };
+                    $('#basicTable').bootstrapTable('prepend',data);
+            });
+    });
+        //请求服务数据时所传参数
+            function queryParams(params){
+                return {
+                    pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                    pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                }
+            }
+        //请求成功方法
+        function responseHandler(result){
+            //如果没有错误则返回数据，渲染表格
+            return {
+                total : result.count, //总页数,前面的key必须为"total"
+                data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+            };
+        }
+
+
+        //提交事件
+        function submit1(){
+            //获取所选择的数据
+            var array = $('#basicTable').bootstrapTable('getSelections');
+            //后来改了数据库，客户和客户类别改为了多对多关系，前端页面没空改了，就先这样吧
+            var type = [];
+            type.push(array[0]['client_type']);
+            array[0]['type'] = type;
+            var json_data = JSON.stringify(array);
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: json_data,
+                url: "{% url 'client-list' %}",
+                error:function(data){
+                    var response_data = data.responseJSON[0];
+                    console.log(response_data);
+                    var index = response_data['index'];
+                    delete response_data['index'];
+                    if(response_data['non_field_errors']){
+                        alert("提交失败: " + response_data['non_field_errors']);
+                        return false;
+                    }
+                    alert('提交失败');
+                    $.each(response_data, function(key, value){
+                        $("#basicTable").bootstrapTable("updateCell",{index:index,field:key,value:value[0]});
+                        {#$("#basicTable").bootstrapTable("updateCell",{index:index,field:'error',value:true});#}
+                    });
+                },
+                success: function(data){
+                    alert('提交成功！');
+                    console.log(data);
+                    $("#basicTable").bootstrapTable('refresh');
+                },
+            });
+        }
+
+        //修改事件
+        function alter(){
+            //获取所选择的数据
+            var array = $('#basicTable').bootstrapTable('getSelections');
+            //后来改了数据库，客户和客户类别改为了多对多关系，前端页面没空改了，就先这样吧
+            var type = [];
+            type.push(array[0]['client_type']);
+            array[0]['type'] = type;
+            var json_data = JSON.stringify(array[0]);
+            var index = array[0]['index'];
+            console.log(json_data);
+            var message = confirm("请确认是否修改");
+            if(message){
+                $.ajax({
+                    type: 'Patch',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: json_data,
+                    url: "{% url 'client-list' %}" + array[0]['id'] + "/",
+                    error:function(data){
+                        var response_data = data.responseJSON;
+                        console.log(response_data);
+                        if(response_data['non_field_errors']){
+                            alert("修改失败: " + response_data['non_field_errors']);
+                            return false;
+                        }
+                        alert('修改失败');
+                        $.each(response_data, function(key, value){
+                            $("#basicTable").bootstrapTable("updateCell",{index:index,field:key,value:value[0]});
+                            {#$("#basicTable").bootstrapTable("updateCell",{index:index,field:'error',value:true});#}
+                        });
+                    },
+                    success: function(data){
+                        alert('修改成功！');
+                        console.log(data);
+                        $("#basicTable").bootstrapTable('refresh');
+                    },
+                });
+            }
+            else{
+                return false;
+            }
+        }
+
+        //删除事件
+        function remove(){
+            //获取所选择的数据
+            var array = $('#basicTable').bootstrapTable('getSelections');
+            var message = confirm("请确认是否删除");
+            if(message){
+                $.ajax({
+                    type: 'Delete',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    url: "{% url 'client-list' %}" + array[0]['id'],
+                    error:function(data){
+                        alert('删除失败');
+                        console.log(data.responseJSON);
+                    },
+                    success: function(data){
+                        alert('删除成功！');
+                        console.log(data);
+                        $("#basicTable").bootstrapTable('refresh');
+                    },
+                });
+            }
+            else{
+                return false;
+            }
+        }
+
+        //查询事件
+        function search(){
+            $("#basicTable").bootstrapTable("refresh",{
+                query: {name: $("#search_name").val(), clientType_name: $("#search_type").val()},
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

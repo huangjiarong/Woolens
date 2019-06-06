@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>进销存管理系统</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!--add-->
+    ﻿<link rel="stylesheet" href="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.css' %}"/>
+    ﻿<link href="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap-editable/css/bootstrap-editable.css' %}" rel="stylesheet">
+
+    <!-- FooTable -->
+    <link href="{% static 'css/plugins/footable/footable.core.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        /*overwrite a.editable-empty*/
+
+        a.editable-empty{
+            width: 55px;
+            height: 25px;
+            display: inline-block;
+
+        }
+        .not-wrap{
+            white-space: nowrap;
+        }
+
+        
+        .editable-click, 
+        a.editable-click, 
+        a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 0px #0088cc;
+            /*    重写去除下边框
+            */
+        }
+
+
+        /* 设置input的样式 
+            bootstrap table padding为8px,加上左border为1px
+            editable input 的样式中padding:6 24 6 2;border 1px;
+        */
+        .inputclass{
+            width:100% !important;min-width:87px;
+            height:30px;
+            padding-left: 2px;
+        }
+
+        .button-margin{
+            margin-bottom:20px;
+        }
+
+        .fixed{
+            table-layout: fixed;
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>查看库存</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="{% url 'index' %}">主页</a>
+                        </li>
+                        <li>
+                            <a>仓库管理</a>
+                        </li>
+                        <li class="active">
+                            <strong>库存</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
+       		 
+			 
+			 <div class="wrapper   fadeInRight">
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                    <!-- model window -->
+    ﻿<div class="modal " id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" style="width:1100px">
+                                <div class="modal-content animated bounceInRight">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">模态标题</h4>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                <div class="row form-horizontal">
+                                                
+                                                <div class="form-group">
+                                                   <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                 <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                 <label for="test" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test1" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test1" placeholder=".col-md-3" class="form-control"></div>
+                                                    <label for="test2" class="col-md-1 control-label">
+                                                        <h4>标题名:</h4>
+                                                   </label>
+                                                    <div class="col-md-3"><input type="text" id="test2" placeholder=".col-md-3" class="form-control"></div>
+                                                </div>
+                                                </div>                  
+                                                </ul>
+                                            </div>                                                  
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                                            <button type="button" class="btn btn-primary">保存更改</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                                      
+
+
+
+
+
+
+
+
+
+  <div class="ibox-content">
+
+
+    <div>
+        <form method="post" class="form-horizontal clearfix">
+                <div class="col-sm-12">
+                    <div class="row form-group">
+                        <label class="col-sm-1 control-label">品种类型</label>
+                        <div class="col-md-2">
+                            <input id="search_type" type="text"  class="form-control">
+                        </div>
+                        <label class="col-sm-1 control-label">毛料</label>
+                        <div class="col-md-2">
+                            <input id="search_woolens" type="text" class="form-control">
+                        </div>
+                        <label class="col-sm-1 control-label">所在仓库</label>
+                        <div class="col-md-2">
+                            <input id="search_warehouse" type="text"  class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    </div>
+                </div>
+        </form>
+        <div class="fixed-table-toolbar pull-right" style="padding-top: 10px;">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick='search()'>查询</button>
+            <a type="﻿button" class="btn btn-primary" href="{% url 'alterReeling' %}">
+                <i class="fa fa-plus"></i>
+            </a>
+        </div>  
+        </div>
+
+        
+        <!-- bootstrap table--->
+        
+    </div>
+		<table class="table-responsive" id="purchaseOrderList"></table>									
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       
+
+
+
+
+
+
+        <div class="footer">
+            <div class="pull-right">
+                <strong>www</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 进销存管理系统 &copy; 2017-2018
+            </div>
+        </div>
+
+        </div>
+        </div>
+
+
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+
+    <!-- add -->
+    ﻿<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/export/bootstrap-table-export.js' %}"></script>
+
+    <!-- <script src="../static/bootstrap_above/tableExport/libs/pdfmake/pdfmake.min.js"></script>
+      <script src="../static/bootstrap_above/tableExport/libs/pdfmake/vfs_fonts.js"></script> -->
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/FileSaver/FileSaver.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF/jspdf.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/tableExport.js' %}"></script>
+
+    ﻿<script src="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap3-editable/js/bootstrap-editable.min.js' %}"></script>
+    <script src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/editable/bootstrap-table-editable.js' %}"></script>
+
+
+
+
+
+    <!-- FooTable -->
+    <script src="{% static 'js/plugins/footable/footable.all.min.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- ajax请求时开启csrf -->
+    <script type="text/javascript">
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+    </script>
+    <!-- Page-Level Scripts -->
+    <script>
+        $(document).ready(function() {
+
+            $('.footable').footable();
+            $('.footable2').footable();
+
+        });
+
+<!--随机生成订单号，此方法为别人的，需要进一步改写-->
+
+function randomNum(minNum,maxNum){
+var today = new Date();
+var day   = today.getDate(); //获取当前日(1-31)
+var month = today.getMonth() + 1; //显示月份比实际月份小1,所以要加1
+var year  = today.getYear();  //获取完整的年份(4位,1970-????)  getFullYear()
+var years=today.getFullYear();
+years= years<99?"20"+years:years;
+month    = month<10?"0"+month:month;  //数字<10，实际显示为，如5，要改成05
+day   = day<10?"0"+day:day;
+var hh=today.getHours();
+hh   = hh<10?"0"+hh:hh;
+var ii=today.getMinutes();
+ii   = ii<10?"0"+ii:ii;
+var ss= today.getSeconds();
+ss   = ss<10?"0"+ss:ss;
+var dada = years+month+day+hh+ii+ss;//时间不能直接相加，要这样相加！！！14位
+
+    switch(arguments.length){
+        case 1:
+            return dada+parseInt(Math.random()*minNum+1,10);
+            //newOrderId = dada+parseInt(Math.random()*minNum+1,10);
+        break;
+        case 2:
+            return dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+            //newOrderId = dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+        break;
+            default:
+                return 0;
+                //newOrderId = 0;
+            break;
+    }
+}
+//var aa=randomNum(1,10000);
+//alert(aa);
+
+var newOrderId = 0;// randomNum(1,1000);//此处不用var，定义了一个全局变量，只有后面的函数执行，此变量才生效。
+
+        function addNewId() {
+            return  randomNum(1,1000);
+          //  console.log(newOrderId);
+        }
+
+<!--随机生成订单号，end-->
+
+
+
+
+
+
+
+      $(function () {
+
+				$.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中    
+                $.fn.bootstrapTable.columnDefaults.width = '106px';
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+                $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+                <!--table start-->
+			    $('#purchaseOrderList').bootstrapTable({
+                    method:'get',
+                    url: "{% url 'inventory-list' %}",
+                    dataField: "data",
+			        dataType:'json',
+                    responseHandler:responseHandler,
+                    queryParams:queryParams,
+			        contentType: "application/x-www-form-urlencoded",
+			        cache: false,
+			        striped: true,                              //是否显示行间隔色
+			        sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+			        showColumns:true,
+			        pagination:true,
+			        minimumCountColumns:2,
+			        pageNumber:1,                       //初始化加载第一页，默认第一页
+			        pageSize: 10,                       //每页的记录行数（*）
+			        pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+			        uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+			        columns: [
+                        {
+                            field: 'woolens_type',
+                            title: '品种类型',
+                        },
+                        {
+                                    field: 'name',
+                                    title: '品种',
+                        },
+                        {
+                                    field: 'packaging_name',
+                                    title: '包装',
+                        },
+                        {
+                                    field: 'color_num',
+                                    title: '色号',
+                                     
+                        },{
+                                    field: 'color_name',
+                                    title: '颜色',
+                                  
+                        },{
+                                    field: 'dyelot_num',
+                                    title: '缸号',
+                                 
+                        },{
+                                    field: 'batch_num',
+                                    title: '批号',
+
+                        },{
+                                    field: 'number',
+                                    title: '数量',
+
+                        },{
+                                    field: 'assess_price',
+                                    title: '单价',
+                        },{
+                            field: 'warehouse_name',
+                            title: '所在仓库',
+                        },
+					]
+				});
+      });
+          //请求服务数据时所传参数
+          function queryParams(params){
+              return {
+                  pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                  pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+              }
+          }
+//请求成功方法
+          function responseHandler(result) {
+              //如果没有错误则返回数据，渲染表格
+              return {
+                  total: result.count, //总页数,前面的key必须为"total"
+                  data: result.results //行数据，前面的key要与之前设置的dataField的值一致.
+              }
+          }
+
+        //查询事件
+        function search(){
+            $("#purchaseOrderList").bootstrapTable("refresh",{
+                query: {woolens_type: $("#search_type").val(), name: $("#search_woolens").val(),
+                    warehouse_name: $("#search_warehouse").val()},
+            });
+        }
+    </script>
+
+</body>
+
+</html>

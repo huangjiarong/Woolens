@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<title>添加付款单</title>
+        {% include 'css.html' %}
+        <style>
+            /*overwrite a.editable-empty*/
+
+            a.editable-empty{
+                width: 55px;
+                height: 25px;
+                display: inline-block;
+
+            }
+
+            .editable-click,
+            a.editable-click,
+            a.editable-click:hover {
+                text-decoration: none;
+                border-bottom: dashed 0px #0088cc;
+                /*    重写去除下边框
+                */
+            }
+
+
+            /* 设置input的样式
+                bootstrap table padding为8px,加上左border为1px
+                editable input 的样式中padding:6 24 6 2;border 1px;
+            */
+            .inputclass{
+                width:100% !important;min-width:87px;
+                height:30px;
+                padding-left: 2px;
+            }
+
+            .button-margin{
+                margin-bottom:20px;
+            }
+
+            .fixed{
+                table-layout: fixed;
+
+            }
+            .aaaa{
+                background: red;
+            }
+    		.paymen{
+    		    order-radius:2px;
+    			background:gray;
+    		}
+    	</style>
+	</head>
+	<body>
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                        <form role="search" class="navbar-form-custom" action="search_results.html">
+                            <div class="form-group">
+                                <!--                    <input type="text" placeholder="请输入搜索内容" class="form-control" name="top-search" id="top-search">-->
+                            </div>
+                        </form>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">欢迎来到进销存管理系统管理后台</span>
+                        </li>
+                        <li class="dropdown">
+                            <ul class="dropdown-menu dropdown-messages">
+                            </ul>
+                        <li>
+                            <a href="login.html">
+                                <i class="fa fa-sign-out"></i> 注销
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+		<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>Foo表格</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="index.html">主页</a>
+                        </li>
+                        <li>
+                            <a>表格</a>
+                        </li>
+                        <li class="active">
+                            <strong>添加付款单</strong>
+                        </li>
+                    </ol>
+                     <a type="hidden" id='tag' href='javascript:void(0)'></a>
+                </div>
+        </div>
+	<div class="wrapper-content"> 
+ 	<div class="ibox-content">
+    <div class="text-center">
+	  <div class="row">
+	  	<h4 class="pull-left">单据编号:<span></span></h4>
+	  </div>
+	  <span>
+		  <input id="payunit" type="text" class="typeahead_1 form-control pull-left" style="width: 15%" placeholder="付款单位"/>
+	  </span>
+	  <!-- <input id="payman" data-type="select" data-title="Select status"></input> -->
+	  <div class="btn-group pull-right" role="toolbar" aria-label="...">
+{#          <button type="button" class="btn btn-primary" style="margin-right: 2px;" onclick="submitData()">提交</button>#}
+{#	      <button id="addRowbtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></button>#}
+      </div>
+	</div>
+		<table class="table-responsive" id="List"></table>	
+		<!--  第二个表格-->
+    <div class="text-center">
+    <div class="btn-group pull-right" role="toolbar" aria-label="...">
+{#      <button type="button" class="btn btn-primary" id="chirdTableaddRowbtn"><i class="fa fa-plus"></i></button>#}
+    </div>
+	</div>
+    	<table class="table-responsive" id="chirdTable"></table>	
+    </div>
+    <div class="modal " id="materialNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="width:1000px;">
+            <div class="modal-content animated bounceInRight">
+                  <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <i class="fa fa-laptop modal-icon"></i>
+                        <h4 class="modal-title">付款单位</h4>
+                        <i id="indexFlag" style="display: none;"></i>
+                  </div>
+                  <div class="modal-body">
+                      <div class="container-fluid">
+                          <div class="row form-horizontal">
+                          <div class="form-group">
+                                  <h4>标题名:</h4>
+                              <div class="col-md-12">
+                                <table id="goodsTable"></table>
+                              </div>
+                          </div>
+                          </div>                  
+                      </div>                                                  
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                      <button id="testid" type="button" data-dismiss="modal" class="btn btn-primary" onclick="setpayunit()">选择</button>
+                      
+                  </div>
+             </div>
+        </div>
+    </div>
+    <div class="modal " id="chirdTableModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="width:1000px;">
+            <div class="modal-content animated bounceInRight">
+                 <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <i class="fa fa-laptop modal-icon"></i>
+                        <h4 class="modal-title">模态标题</h4>
+                        <i id="indexFlag" style="display: none;"></i>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row form-horizontal">
+                            <div class="form-group">
+                                    <h4>摇纱回毛:</h4>
+                                <div class="col-md-12">
+                                  <table id="secondTab"></table>
+                                </div>
+                            </div>
+                            </div>                  
+                        </div>                                                  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" style="margin-bottom:0px;">关闭</button>
+                        <button id="secondsub" type="button" data-dismiss="modal" class="btn btn-primary" onclick="getValues()">选择</button>
+                        
+                    </div>
+               </div>
+            </div>
+     </div>
+	</div>
+        {% include 'js.html' %}
+<script>
+ $(document).ready(function() {
+
+     $('.footable').footable();
+     $('.footable2').footable();
+ });
+
+	
+ <!-- 随机生成订单号，此方法为别人的，需要进一步改写 -->
+
+function randomNum(minNum,maxNum){
+var today = new Date();
+var day   = today.getDate(); //获取当前日(1-31)
+var month = today.getMonth() + 1; //显示月份比实际月份小1,所以要加1
+var year  = today.getYear();  //获取完整的年份(4位,1970-????)  getFullYear()
+var years=today.getFullYear();
+years= years<99?"20"+years:years;
+month    = month<10?"0"+month:month;  //数字<10，实际显示为，如5，要改成05
+day   = day<10?"0"+day:day;
+var hh=today.getHours();
+hh   = hh<10?"0"+hh:hh;
+var ii=today.getMinutes();
+ii   = ii<10?"0"+ii:ii;
+var ss= today.getSeconds();
+ss   = ss<10?"0"+ss:ss;
+var dada = years+month+day+hh+ii+ss;//时间不能直接相加，要这样相加！！！14位
+
+    switch(arguments.length){
+        case 1:
+            return dada+parseInt(Math.random()*minNum+1,10);
+            //newOrderId = dada+parseInt(Math.random()*minNum+1,10);
+        break;
+        case 2:
+            return dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+            //newOrderId = dada+parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+        break;
+            default:
+                return 0;
+                //newOrderId = 0;
+            break;
+    }
+}
+
+ {% if ord_num %}
+     var newOrderId = '{{ ord_num }}';
+ {% else %}
+     var newOrderId = randomNum(1,1000);
+ {% endif %}
+ $('h4.pull-left').text('订单号:'+newOrderId);
+
+
+<!-- 随机生成订单号，end-->
+
+      $(function () {
+				$.fn.bootstrapTable.columnDefaults.valign = 'middle';//设置垂直居中    
+                $.fn.editable.defaults.mode = 'inline';//编辑方式为内联方式
+                $.fn.editable.defaults.showbuttons = false;//设置所有的元素不显示按钮
+                $.fn.editable.defaults.emptytext = '   ';//设置默认空文本
+                $.fn.editable.defaults.onblur = "submit";//当失去焦点时自动提交
+                $.fn.editable.defaults.inputclass="inputclass";//定义input的样式
+                $.fn.editable.defaults.defaultValue='';
+                $.fn.bootstrapTable.columnDefaults.class='not-wrap';
+                <!--table start-->
+			    $('#List').bootstrapTable({
+			    	method:'get',
+			        dataType:'json',
+			        contentType: "application/x-www-form-urlencoded",
+                    dataField: 'data',
+                    url: "{% url 'receipt-list' %}",
+                    queryParams: chirdTable_queryParams,
+                    responseHandler: function(result){
+                        $("#payunit").attr('value',result.results[0].client_name);
+                        return {
+                            total : result.count, //总页数,前面的key必须为"total"
+                            data : result.results, //行数据，前面的key要与之前设置的dataField的值一致.
+                        };
+                    },
+			        cache: false,
+			        striped: true,                              //是否显示行间隔色
+			        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+			    //    showColumns:true,
+			        pagination:true,
+			        minimumCountColumns:2,
+			        pageNumber:1,                       //初始化加载第一页，默认第一页
+			        pageSize: 8,                       //每页的记录行数（*）
+			        pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）
+			        uniqueId: "id", //每一行的唯一标识，一般为主键列
+			        columns: [
+			         	{//为每一行添加index的方法
+                            field:'index',
+                            title:'index', 
+                            formatter:function (value,row,index){
+                                row.index = index;
+                                return index;
+                            }
+                        },{
+				                field: 'id',
+								title: 'id'
+				    	},
+						{
+									field: 'ord_num',
+									title: '单据编号',
+									visible:'false'
+						},
+						{
+											field: 'account_name',
+											title: '付款账号',
+                        },{
+								
+											field: 'settlement_type_name',
+											title: '结算方式',
+                        },{
+                                    field: 'receipt_money',
+                                    title: '收款金额',
+                        },{
+                                    field: 'settlement_num',
+                                    title: '结算号',
+                        },{
+											field: 'staff',
+											title: '收银人',
+							},{
+                            field: 'date',
+                            title: '日期',
+                        },{
+                                    field: 'remarks',
+                                    title: '备注',    
+                        }
+					]
+				});
+				 $('#chirdTable').bootstrapTable({
+                                method:'get',
+								dataType:'json',
+								contentType: "application/x-www-form-urlencoded",
+                                url: "{% url 'receipt-list' %}",
+                                queryParams: chirdTable_queryParams,
+                                responseHandler: chirdTable_responseHandler,
+                                dataField: "data",//这是返回的json数组的key.默认好像是"rows".这里只有前后端约定好就行
+								cache: false,
+								striped: true,                              //是否显示行间隔色
+								sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+						//    showColumns:true,
+								pagination:true,
+								minimumCountColumns:10,
+								pageNumber:1,                       //初始化加载第一页，默认第一页
+								pageSize: 10,                       //每页的记录行数（*）
+								pageList: [10, 15, 20, 25],        //可供选择的每页的行数（*）               //
+							columns: [
+                            {
+                                field:'index',
+                                title:'index',
+                                formatter:function (value,row,index){
+                                    row.index = index;
+                                    return index;
+                                },
+                            },
+                            {
+									field: 'id',
+									title: 'id'
+							},{
+									field:'source_ordNum',
+									title:'源单号'
+							},{
+									field:'business_type',
+									title:'业务类别'
+							},{
+									field:'date',
+									title:'单据日期'
+							},{
+									field:'money',
+									title:'单据金额'
+							},{
+									field:'had_cancel',
+									title:'已核销金额'
+							},{
+									field:'not_cancel',
+									title:'未核销金额'
+							},{
+									field:'cancel',
+									title:'本次核销金额',
+							}
+						]
+					});
+          //请求服务数据时所传参数
+          function chirdTable_queryParams(params){
+              return {
+                  pageSize : params.limit, //每一页的数据行数，默认是上面设置的10(pageSize)
+                  pageIndex : params.offset/params.limit+1, //当前页面,默认是上面设置的1(pageNumber)
+                  ord_num: newOrderId,
+              }
+          }
+          //请求成功方法
+          function chirdTable_responseHandler(result){
+              //如果没有错误则返回数据，渲染表格
+              return {
+                  total : result.count, //总页数,前面的key必须为"total"
+                  data : result.results[0].account_due, //行数据，前面的key要与之前设置的dataField的值一致.
+              };
+          }
+
+      });
+
+
+
+</script>
+	</body>
+</html>

@@ -1,0 +1,39 @@
+{% load staticfiles %}
+
+<!-- Mainly scripts -->
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+<script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+
+<!-- add -->
+﻿<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/export/bootstrap-table-export.js' %}"></script>
+
+<!--   <script src="../static/bootstrap_above/tableExport/libs/pdfmake/pdfmake.min.js"></script>
+    <script src="../static/bootstrap_above/tableExport/libs/pdfmake/vfs_fonts.js"></script> -->
+<script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/FileSaver/FileSaver.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF/jspdf.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap_above/tableExport/tableExport.js' %}"></script>
+
+﻿<script src="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap3-editable/js/bootstrap-editable.js' %}"></script>
+<script src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/editable/bootstrap-table-editable.js' %}"></script>
+
+
+
+
+
+<!-- FooTable -->
+<script src="{% static 'js/plugins/footable/footable.all.min.js' %}"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="{% static 'js/inspinia.js' %}"></script>
+<script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+<!-- ajax请求时开启csrf -->
+<script type="text/javascript">
+    $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+</script>

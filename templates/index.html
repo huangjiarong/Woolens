@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>进销存管理系统</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!--add-->
+    ﻿<link rel="stylesheet" href="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.css' %}"/>
+    ﻿<link href="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap-editable/css/bootstrap-editable.css' %}" rel="stylesheet">
+
+    <!-- FooTable -->
+    <link href="{% static 'css/plugins/footable/footable.core.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        /*overwrite a.editable-empty*/
+
+        a.editable-empty{
+            width: 55px;
+            height: 25px;
+            display: inline-block;
+
+        }
+        
+        
+        .editable-click, 
+        a.editable-click, 
+        a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 0px #0088cc;
+            /*    重写去除下边框
+            */
+        }
+
+
+        /* 设置input的样式 
+            bootstrap table padding为8px,加上左border为1px
+            editable input 的样式中padding:6 24 6 2;border 1px;
+        */
+        .inputclass{
+            padding:2px 24px 2px 4px;
+            width:100% !important;min-width:87px;
+            height:30px;
+            padding-left: 2px;
+        }
+
+        .button-margin{
+            margin-bottom:20px;
+        }
+
+        .fixed{
+            table-layout: fixed;
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        {% include 'nav.html' %}
+
+        <div id="page-wrapper" class="gray-bg">
+
+            {% include 'header.html' %}
+
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>首页</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="{% url 'index' %}">主页</a>
+                        </li>
+                        <li class="active">
+                            <strong>分析情况</strong>
+                        </li>
+                    </ol>
+                </div>
+                
+               
+            </div>
+            <div class="wrapper wrapper-content">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>应收款</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">40 886,200</h1>
+                                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                                <small>总收入</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>应付款</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">275,800</h1>
+                                <div class="stat-percent font-bold text-success">20% <i class="fa fa-level-up"></i></div>
+                                <small>总支出</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>仓库</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">106,120</h1>
+                                <div class="stat-percent font-bold text-success">44% <i class="fa fa-level-up"></i></div>
+                                <small>总价值</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>总订单</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">80</h1>
+                                <div class="stat-percent font-bold text-success">38% <i class="fa fa-level-down"></i></div>
+                                <small>订单数</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Echatts start-->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>月盈利情况</h5>
+                            </div>
+                            <div id="profitBar" class="ibox-content" style="height: 300px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Echatts end-->
+                    
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>摇纱订单</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">42</h1>
+                                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                                <small>订单数</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>染色订单</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">27</h1>
+                                <div class="stat-percent font-bold text-success">20% <i class="fa fa-level-up"></i></div>
+                                <small>总订单</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>打毛订单</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">10</h1>
+                                <div class="stat-percent font-bold text-success">44% <i class="fa fa-level-up"></i></div>
+                                <small>总订单</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-success pull-right">本月</span>
+                                <h5>收入</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">40,200</h1>
+                                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                                <small>总收入</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-info pull-right">全年</span>
+                                <h5>订单</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">2,800</h1>
+                                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
+                                <small>新订单</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="label label-primary pull-right">今天</span>
+                                <h5>访客</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <h1 class="no-margins">1020</h1>
+                                <div class="stat-percent font-bold text-navy">44% <i class="fa fa-level-up"></i></div>
+                                <small>新访客</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+            <div class="pull-right">
+                <strong>www</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 进销存管理系统 &copy; 2017-2018
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+
+
+
+
+    <!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+
+    <!-- add -->
+    ﻿<script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/bootstrap-table.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/export/bootstrap-table-export.js' %}"></script>
+
+    <!--   <script src="../static/bootstrap_above/tableExport/libs/pdfmake/pdfmake.min.js"></script>
+        <script src="../static/bootstrap_above/tableExport/libs/pdfmake/vfs_fonts.js"></script> -->
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/FileSaver/FileSaver.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF/jspdf.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap_above/tableExport/tableExport.js' %}"></script>
+
+    ﻿<script src="{% static 'bootstrap_above/x-editable-develop/dist/bootstrap3-editable/js/bootstrap-editable.min.js' %}"></script>
+    <script src="{% static 'bootstrap_above/bootstrap-table-develop/dist/extensions/editable/bootstrap-table-editable.js' %}"></script>
+
+
+    <!-- Echarts js -->
+        <script src="{% static 'js/echarts.min.js' %}"></script>
+        
+
+
+    <!-- FooTable -->
+    <script src="{% static 'js/plugins/footable/footable.all.min.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- ajax请求时开启csrf -->
+    <script type="text/javascript">
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+    </script>
+
+
+    <!-- Page-Level Scripts -->
+    <script> 
+            // echarts 1
+            var chartsBar = echarts.init(document.querySelector("#profitBar"));
+            var option = {
+            tooltip: {},
+            backgroundColor:'#FFF',
+            legend: {
+                data:['盈利']
+            },
+            //x轴上的数据
+            xAxis: {
+                data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+            },
+            //y轴上的数据
+            yAxis: {},
+            series: [{
+                name: '盈利',
+                type: 'bar',
+                data: getSeries()
+            }]
+
+        };
+        chartsBar.setOption(option);
+
+
+        // echarts 2
+        var chartsPie = echarts.init(document.querySelector("#sellPie"));
+        chartsPie.setOption({
+            backgroundColor:'#FFF',
+            series:{
+                name:'销售排行',
+                type:'pie',
+                radius:'55%',
+                // roseType:'angle',
+                data:[{
+                    value:100,
+                    name:'手机'
+                },{
+                    value:200,
+                    name:'电脑'
+                },{
+                    value:300,
+                    name:'衣服'
+                },{
+                    value:400,
+                    name:'相机'
+                },{
+                    value:500,
+                    name:'冰箱'
+                },{
+                    value:400,
+                    name:'其他'
+                }]
+            }
+        });
+        function getSeries(){
+            var data  = new Array();
+            for(var i=0;i<12;i++){
+                data.push(Math.random()*10,);
+            }
+            return data;
+        }
+    </script>
+
+</body>
+
+</html>
