@@ -104,9 +104,9 @@ WSGI_APPLICATION = 'Woolens.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Woolens',
-        'USER': 'root',
-        'PASSWORD': 'qq865231239',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'POST': '3306',
     }
